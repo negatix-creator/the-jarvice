@@ -74,7 +74,7 @@ if (( FREE_GB < 3 )); then
     err "Свободно ${FREE_GB}ГБ (нужно минимум 3ГБ)"
     exit 1
 fi
-ok "${FREE_GB}ГБ свободного места — хватит"
+ok "${FREE_GB}ГБ свободного места — должно хватить"
 
 # ─── Шаг 2: Homebrew ───────────────────────────────────────────────────
 step "2/13: Homebrew"
@@ -82,7 +82,7 @@ if command -v brew &>/dev/null; then
     ok "Homebrew установлен"
 else
     if $CHECK_MODE; then err "Homebrew не найден"; exit 1; fi
-    info "Устанавливаю Homebrew (потребуется пароль)..."
+    info "Устанавливаю Homebrew (придётся вспомнить пароль)..."
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     if [ -f /opt/homebrew/bin/brew ]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -144,7 +144,7 @@ fi
 # ─── Шаг 6: Ollama ──────────────────────────────────────────────────────
 step "6/13: Ollama"
 if command -v ollama &>/dev/null; then
-    ok "Ollama установлен — нейросети уже думают за вас"
+    ok "Ollama установлен — нейросети готовы забрать вашу работу"
 else
     if $CHECK_MODE; then warn "Ollama не найден"; exit 1; fi
     info "Устанавливаю Ollama..."
@@ -193,12 +193,12 @@ if [ "$OLLAMA_READY" = true ]; then
         if $QUICK_MODE || $CHECK_MODE; then
             warn "Модель $MODEL не скачана. Запустите: ollama pull $MODEL"
         else
-            info "Скачиваю модель $MODEL (облачная, нужен интернет)..."
+            info "Скачиваю модель $MODEL (облачная, жрёт трафик)..."
             if ollama pull "$MODEL" 2>&1; then
                 ok "Модель $MODEL скачана"
             else
                 warn "Облачная модель недоступна — скачиваю локальную qwen3:14b (8.6 ГБ)..."
-                info "Это может занять 5-10 минут. Кофе? ☕"
+                info "Это займёт 5-10 минут. Самое время усомниться в выборе профессии."
                 if ollama pull "qwen3:14b" 2>&1; then
                     ok "Локальная модель qwen3:14b скачана"
                 else
@@ -215,7 +215,7 @@ if [ "$OLLAMA_READY" = true ]; then
         if $QUICK_MODE || $CHECK_MODE; then
             warn "Модель эмбеддингов не скачана. Запустите: ollama pull $EMBED_MODEL"
         else
-            info "Скачиваю модель эмбеддингов (274 МБ — меньше одного мема)..."
+            info "Скачиваю модель эмбеддингов (274 МБ — даже мем весит больше)..."
             ollama pull "$EMBED_MODEL" 2>&1 && ok "Модель эмбеддингов скачана" || \
                 warn "Ошибка скачивания — поиск по памяти может не работать"
         fi
@@ -231,7 +231,7 @@ if [ "$OLLAMA_READY" = true ]; then
     CLOUD_TEST=$(curl -sf --max-time 20 http://localhost:11434/api/generate \
         -d '{"model":"glm-5.1:cloud","prompt":"привет","stream":false}' 2>/dev/null || echo "")
     if [ -n "$CLOUD_TEST" ]; then
-        ok "Облачные модели работают (авторизация не нужна — редкость!)"
+        ok "Облачные модели работают (Да, бесплатно. Не привыкай.)"
     else
         echo ""
         echo "  ${BOLD}${YELLOW}⚡ Облачным моделям нужна авторизация${NC}"
@@ -291,7 +291,7 @@ else
 
     if [ -f "pyproject.toml" ]; then
         if pip install . --quiet 2>&1; then
-            ok "the-jarvice установлен — добро пожаловать в клуб"
+            ok "the-jarvice установлен. Ваши данные уже скучают по вам."
         elif pip install -e . --quiet 2>&1; then
             ok "the-jarvice установлен (dev-режим)"
         else
@@ -463,8 +463,8 @@ fi
 step "11/13: Учётные данные"
 echo ""
 echo "  ${BOLD}Подключаем сервисы.${NC}"
-echo "  ${DIM}Нажмите Enter, чтобы пропустить любой шаг.${NC}"
-echo "  ${DIM}Пароли хранятся в Keychain, а не в файлах. Мы не такие.${NC}"
+echo "  ${DIM}Нажмите Enter, чтобы пропустить любой шаг. Да, даже тот, что со звёздочкой.${NC}"
+echo "  ${DIM}Пароли хранятся в Keychain. Не в plaintext — мы не варвары.${NC}"
 echo ""
 
 if ! $CHECK_MODE && ! $QUICK_MODE; then
@@ -474,7 +474,7 @@ if ! $CHECK_MODE && ! $QUICK_MODE; then
     echo "  3. Выберите имя (например «Мой Ассистент»)"
     echo "  4. Выберите username (например «my_assistant_bot»)"
     echo "  5. Скопируйте токен (формат: 7123456789:AA...)"
-    echo "  ${DIM}Нет, это не номер кредитки. Хотя формат похож.${NC}"
+    echo "  ${DIM}Нет, это не номер кредитки. Хотя выгорание делает похожими все цифры.${NC}"
     echo ""
     read -p "  Токен Telegram-бота: " TG_TOKEN
     if [ -n "$TG_TOKEN" ]; then
@@ -491,7 +491,7 @@ if ! $CHECK_MODE && ! $QUICK_MODE; then
 
     echo ""
     echo "  ${BOLD}2/3 Учётные данные Exchange${NC} (опционально — для сводок по почте)"
-    echo "  ${DIM}Пропустите, если не используете корпоративный Exchange${NC}"
+    echo "  ${DIM}Пропустите, если у вас нет Exchange. Завидуем.${NC}"
     echo ""
     read -p "  Email Exchange (или Enter для пропуска): " EX_EMAIL
     if [ -n "$EX_EMAIL" ]; then
@@ -510,7 +510,7 @@ if ! $CHECK_MODE && ! $QUICK_MODE; then
 
     echo ""
     echo "  ${BOLD}3/3 Подключение бота к OpenClaw${NC}"
-    echo "  ${DIM}Это свяжет вашего бота с системой агентов.${NC}"
+    echo "  ${DIM}Это свяжет бота с системой. Бот в восторге. Наверное.${NC}"
     echo ""
     if [ -n "${TG_TOKEN:-}" ]; then
         info "Подключаю Telegram-канал к OpenClaw..."
@@ -541,7 +541,7 @@ if ! $CHECK_MODE; then
         mkdir -p "$dir"
     done
     chmod 700 "$RED_DIR"
-    ok "Директории созданы (PII RED: chmod 700 — приватно как надо)"
+    ok "Директории созданы (PII RED — chmod 700, потому что чужие глаза тут не нужны)"
 fi
 
 # ═══════════════════════════════════════════════════════════
@@ -646,7 +646,7 @@ echo ""
 echo "  ${BOLD}Первый запуск:${NC}"
 echo "    the-jarvice run --once"
 echo ""
-echo "  ${DIM}После первого запуска вы получите сводку в Telegram в течение 30 секунд.${NC}"
+echo "  ${DIM}После первого запуска — сводка в Telegram за 30 секунд. Если не пришла — проверьте, не молчит ли бот из принципа.${NC}"
 echo ""
 echo "  ${BOLD}Расписание сводок:${NC}"
 echo "    the-jarvice enable"
@@ -656,7 +656,7 @@ echo "    openclaw gateway run"
 echo ""
 echo "  ${DIM}Если что-то не работает:${NC}"
 echo "  ${DIM}  1. Перезапустите Terminal (помогает в 90% случаев)${NC}"
-echo "  ${DIM}  2. Напишите Вадиму (помогает в оставшихся 10%)${NC}"
+echo "  ${DIM}  2. Напишите Вадиму — он разберётся с оставшимися 10%${NC}"
 echo ""
 echo "  ${DIM}Конфиг:    ~/.the-jarvice/config.yaml${NC}"
 echo "  ${DIM}OpenClaw:  ~/.openclaw/${NC}"
