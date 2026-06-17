@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1024" width="1792" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628"/>
+      <stop offset="100%" style="stop-color:#0f2240"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4ff"/>
+      <stop offset="100%" style="stop-color:#0088cc"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f0c040"/>
+      <stop offset="100%" style="stop-color:#e0a020"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1792" height="1024" fill="url(#bg)"/>
+
+  <!-- Grid pattern -->
+  <g opacity="0.05">
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00d4ff" stroke-width="0.5"/>
+    </pattern>
+    <rect width="1792" height="1024" fill="url(#grid)"/>
+  </g>
+
+  <!-- Neural network dots -->
+  <g opacity="0.15">
+    <circle cx="200" cy="150" r="3" fill="#00d4ff"/>
+    <circle cx="350" cy="100" r="2" fill="#00d4ff"/>
+    <circle cx="500" cy="180" r="2.5" fill="#00d4ff"/>
+    <circle cx="280" cy="250" r="2" fill="#00d4ff"/>
+    <circle cx="1500" cy="200" r="3" fill="#00d4ff"/>
+    <circle cx="1600" cy="300" r="2" fill="#00d4ff"/>
+    <circle cx="1400" cy="150" r="2.5" fill="#00d4ff"/>
+    <line x1="200" y1="150" x2="350" y2="100" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="350" y1="100" x2="500" y2="180" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="280" y1="250" x2="200" y2="150" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="1500" y1="200" x2="1600" y2="300" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="1400" y1="150" x2="1500" y2="200" stroke="#00d4ff" stroke-width="0.5"/>
+  </g>
+
+  <!-- Shield icon -->
+  <g transform="translate(896, 350)" filter="url(#glow)">
+    <path d="M0,-80 L60,-50 L60,20 C60,60 0,90 0,90 C0,90 -60,60 -60,20 L-60,-50 Z"
+          fill="none" stroke="url(#cyan)" stroke-width="3"/>
+    <path d="M0,-50 L35,-30 L35,10 C35,35 0,55 0,55 C0,55 -35,35 -35,10 L-35,-30 Z"
+          fill="#00d4ff" fill-opacity="0.15"/>
+    <!-- Lock icon inside shield -->
+    <rect x="-12" y="-5" width="24" height="20" rx="3" fill="url(#cyan)"/>
+    <path d="M-8,-5 L-8,-12 A8,8 0 0,1 8,-12 L8,-5" fill="none" stroke="url(#cyan)" stroke-width="3"/>
+    <circle cx="0" cy="5" r="3" fill="#0a1628"/>
+  </g>
+
+  <!-- Title -->
+  <text x="896" y="500" text-anchor="middle" font-family="SF Pro Display, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="72" font-weight="700" fill="white" filter="url(#shadow)">The Jarvice</text>
+
+  <!-- Version badge -->
+  <rect x="810" y="520" width="172" height="32" rx="16" fill="url(#cyan)" opacity="0.9"/>
+  <text x="896" y="542" text-anchor="middle" font-family="SF Mono, Monaco, Menlo, monospace" font-size="16" font-weight="600" fill="#0a1628">v0.2.0</text>
+
+  <!-- Tagline -->
+  <text x="896" y="590" text-anchor="middle" font-family="SF Pro Display, -apple-system, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#8899bb">Local-first AI assistant for corporate data summaries</text>
+
+  <!-- Feature icons row -->
+  <g transform="translate(0, 0)">
+    <!-- Email icon -->
+    <g transform="translate(520, 670)">
+      <rect x="-20" y="-15" width="40" height="30" rx="4" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+      <path d="M-20,-15 L0,2 L20,-15" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="0" y="40" text-anchor="middle" font-family="SF Pro Display, Arial, sans-serif" font-size="13" fill="#6688aa">Exchange</text>
+    </g>
+
+    <!-- Chat icon -->
+    <g transform="translate(720, 670)">
+      <path d="M-20,-12 h40 a4,4 0 0,1 4,4 v16 a4,4 0 0,1 -4,4 h-12 l-8,8 v-8 h-20 a4,4 0 0,1 -4,-4 v-16 a4,4 0 0,1 4,-4" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="0" y="40" text-anchor="middle" font-family="SF Pro Display, Arial, sans-serif" font-size="13" fill="#6688aa">Teams</text>
+    </g>
+
+    <!-- Shield/Privacy icon -->
+    <g transform="translate(896, 670)">
+      <path d="M0,-15 L12,-8 L12,5 C12,12 0,18 0,18 C0,18 -12,12 -12,5 L-12,-8 Z" fill="none" stroke="#f0c040" stroke-width="1.5"/>
+      <text x="0" y="40" text-anchor="middle" font-family="SF Pro Display, Arial, sans-serif" font-size="13" fill="#f0c040">Privacy</text>
+    </g>
+
+    <!-- AI/Brain icon -->
+    <g transform="translate(1072, 670)">
+      <circle cx="0" cy="-3" r="12" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+      <path d="M-6,-3 C-6,-8 6,-8 6,-3" fill="none" stroke="#00d4ff" stroke-width="1"/>
+      <path d="M-4,2 C-4,7 4,7 4,2" fill="none" stroke="#00d4ff" stroke-width="1"/>
+      <text x="0" y="40" text-anchor="middle" font-family="SF Pro Display, Arial, sans-serif" font-size="13" fill="#6688aa">Ollama</text>
+    </g>
+
+    <!-- Telegram icon -->
+    <g transform="translate(1248, 670)">
+      <path d="M-16,-8 L0,-14 L4,6 L-4,2 Z" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+      <path d="M-4,2 L-2,-4 L6,-8" fill="none" stroke="#00d4ff" stroke-width="1"/>
+      <text x="0" y="40" text-anchor="middle" font-family="SF Pro Display, Arial, sans-serif" font-size="13" fill="#6688aa">Telegram</text>
+    </g>
+  </g>
+
+  <!-- Bottom stats -->
+  <g transform="translate(896, 820)">
+    <text x="-300" y="0" text-anchor="middle" font-family="SF Mono, Monaco, monospace" font-size="14" fill="#f0c040" font-weight="600">267 TESTS</text>
+    <text x="-100" y="0" text-anchor="middle" font-family="SF Mono, Monaco, monospace" font-size="14" fill="#00d4ff" font-weight="600">9209 LOC</text>
+    <text x="100" y="0" text-anchor="middle" font-family="SF Mono, Monaco, monospace" font-size="14" fill="#6688aa" font-weight="600">4 SPRINTS</text>
+    <text x="300" y="0" text-anchor="middle" font-family="SF Mono, Monaco, monospace" font-size="14" fill="#6688aa" font-weight="600">MIT LICENSE</text>
+  </g>
+
+  <!-- Install command -->
+  <g transform="translate(896, 900)">
+    <rect x="-280" y="-18" width="560" height="36" rx="8" fill="#0f2240" stroke="#00d4ff" stroke-width="1" opacity="0.8"/>
+    <text x="0" y="5" text-anchor="middle" font-family="SF Mono, Monaco, Menlo, monospace" font-size="15" fill="#00d4ff">$ the-jarvice configure --quick</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="980" width="1792" height="44" fill="#00d4ff" opacity="0.1"/>
+  <text x="896" y="1007" text-anchor="middle" font-family="SF Pro Display, Arial, sans-serif" font-size="12" fill="#4466aa">Exchange → PII Anonymizer → Ollama → Telegram &nbsp;|&nbsp; RED/GREEN Pipeline &nbsp;|&nbsp; Credentials in Keychain &nbsp;|&nbsp; macOS First</text>
+</svg>

@@ -1,0 +1,48 @@
+# The Jarvice Configuration — v1
+# This is the single source of truth for all settings.
+# OpenClaw config (openclaw.json) is generated from this file.
+
+version: 1
+
+exchange:
+  enabled: true
+  server: ""                    # EWS server URL, e.g. "https://mail.corp.ru/EWS/Exchange.asmx"
+  email: ""                     # User email
+  auth_mode: "auto"             # "auto" | "basic" | "ntlm"
+  keychain_service: "the-jarvice.exchange"
+  scrape_interval_hours: 4     # How often to scrape
+
+teams:
+  enabled: true
+  auth_mode: "ic3_token"        # "ic3_token" (current) | "graph_api" (future)
+  keychain_service: "the-jarvice.teams"
+  scrape_interval_hours: 4
+
+telegram:
+  enabled: true
+  bot_token_keychain: "the-jarvice.telegram-bot"
+  chat_id: ""                   # Telegram chat ID for delivery
+  keychain_service: "the-jarvice.telegram"
+
+pii:
+  enabled: true
+  red_dir: "~/.the-jarvice/data/pii/RED"       # Original data (chmod 600)
+  green_dir: "~/.the-jarvice/data/pii/GREEN"    # Anonymized data
+
+models:
+  primary: "glm-5.1:cloud"       # Cloud model (no local GPU needed)
+  fallback: "qwen2.5:7b"         # Fallback model (local, 4.7 GB)
+  ollama_host: "http://localhost:11434"
+  embeddings: "nomic-embed-text"  # Embeddings model for memory search
+
+schedule:
+  timezone: "Europe/Moscow"
+  morning_summary: "07:00"       # HH:MM
+  evening_summary: "19:00"       # HH:MM
+  weekly_summary: "Mon 09:00"    # Day HH:MM
+
+logging:
+  level: "INFO"                  # DEBUG | INFO | WARNING | ERROR
+  dir: "~/.the-jarvice/logs"
+  max_size_mb: 50
+  rotation: "daily"

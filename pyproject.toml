@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "the-jarvice"
+dynamic = ["version"]
+description = "Local-first AI assistant for corporate data summaries"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Friday (The Jarvice Team)"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business",
+]
+dependencies = [
+    "typer[all]>=0.9.0",
+    "pydantic>=2.0",
+    "keyring>=24.0",
+    "keyrings.alt>=5.0",
+    "rich>=13.0",
+    "pyyaml>=6.0",
+    "requests>=2.31",
+    "httpx>=0.24",
+]
+
+[project.optional-dependencies]
+exchange = [
+    "exchangelib>=5.0",
+]
+pii = [
+    "regex>=2023.0",
+]
+telegram = [
+    "python-telegram-bot>=20.0",
+]
+teams = [
+    "httpx>=0.24",
+]
+teams-graph = [
+    "msgraph-core>=1.0",
+    "azure-identity>=1.15",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+all = ["the-jarvice[exchange,teams,pii,telegram]"]
+
+[project.scripts]
+the-jarvice = "the_jarvice.cli.main:app"
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+[tool.setuptools.packages.find]
+include = ["the_jarvice*"]
+
+[tool.setuptools.package-data]
+the_jarvice = ["config/*.yaml", "config/*.json", "VERSION"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["the_jarvice"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

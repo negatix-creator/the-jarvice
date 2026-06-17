@@ -1,0 +1,49 @@
+{
+  "agents": {
+    "defaults": {
+      "model": "{{models_primary}}",
+      "fallbackModel": "{{models_fallback}}"
+    }
+  },
+  "models": {
+    "ollama": {
+      "host": "{{models_ollama_host}}"
+    }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": {{telegram_enabled}},
+      "botTokenKeychain": "{{telegram_bot_token_keychain}}",
+      "chatId": "{{telegram_chat_id}}"
+    }
+  },
+  "integrations": {
+    "exchange": {
+      "enabled": {{exchange_enabled}},
+      "server": "{{exchange_server}}",
+      "email": "{{exchange_email}}",
+      "authMode": "{{exchange_auth_mode}}",
+      "keychainService": "{{exchange_keychain_service}}"
+    },
+    "teams": {
+      "enabled": {{teams_enabled}},
+      "authMode": "{{teams_auth_mode}}",
+      "keychainService": "{{teams_keychain_service}}"
+    }
+  },
+  "pii": {
+    "enabled": {{pii_enabled}},
+    "redDir": "{{pii_red_dir}}",
+    "greenDir": "{{pii_green_dir}}"
+  },
+  "schedule": {
+    "timezone": "{{schedule_timezone}}",
+    "morningSummary": "{{schedule_morning_summary}}",
+    "eveningSummary": "{{schedule_evening_summary}}",
+    "weeklySummary": "{{schedule_weekly_summary}}"
+  },
+  "logging": {
+    "level": "{{logging_level}}",
+    "dir": "{{logging_dir}}"
+  }
+}
