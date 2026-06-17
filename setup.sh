@@ -55,10 +55,16 @@ if $CHECK_MODE; then
     echo ""
 fi
 
-# ─── Шаг 1: Системные требования ────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════
+# ФАЗА 1: ИНФРАСТРУКТУРА
+# ═══════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}━━━ Фаза 1: Инфраструктура ━━━${NC}"
+
+# ─── Шаг 1: Система ──────────────────────────────────────────────────────
 step "1/13: Система"
 if [[ "$(uname)" != "Darwin" ]]; then
-    err "Скрипт поддерживает только macOS."
+    err "Скрипт поддерживает только macOS. Linux — в следующей версии."
     exit 1
 fi
 ok "macOS $(sw_vers -productVersion)"
@@ -68,7 +74,7 @@ if (( FREE_GB < 3 )); then
     err "Свободно ${FREE_GB}ГБ (нужно минимум 3ГБ)"
     exit 1
 fi
-ok "${FREE_GB}ГБ свободного места"
+ok "${FREE_GB}ГБ свободного места — хватит"
 
 # ─── Шаг 2: Homebrew ───────────────────────────────────────────────────
 step "2/13: Homebrew"
@@ -76,8 +82,8 @@ if command -v brew &>/dev/null; then
     ok "Homebrew установлен"
 else
     if $CHECK_MODE; then err "Homebrew не найден"; exit 1; fi
-    info "Устанавливаю Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    info "Устанавливаю Homebrew (потребуется пароль)..."
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     if [ -f /opt/homebrew/bin/brew ]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zshrc"
@@ -85,10 +91,10 @@ else
     ok "Homebrew установлен"
 fi
 
-# ─── Шаг 3: Python 3.10+ ────────────────────────────────────────────────
+# ─── Шаг 3: Python ────────────────────────────────────────────────────────
 step "3/13: Python"
 PYTHON_CMD=""
-for cmd in python3.14 python3.13 python3.12 python3.11 python3.10 python3; do
+for cmd in python3.13 python3.12 python3.11 python3.10 python3; do
     if command -v "$cmd" &>/dev/null; then
         PYVER=$("$cmd" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || continue)
         PYMAJOR=$("$cmd" -c "import sys; print(sys.version_info.major)" 2>/dev/null || continue)
@@ -127,14 +133,18 @@ if command -v openclaw &>/dev/null; then
 else
     if $CHECK_MODE; then err "OpenClaw не найден"; exit 1; fi
     info "Устанавливаю OpenClaw..."
-    npm install -g openclaw
-    ok "OpenClaw установлен"
+    if npm install -g openclaw 2>&1; then
+        ok "OpenClaw установлен"
+    else
+        err "Не удалось установить OpenClaw. Запустите: npm install -g openclaw"
+        exit 1
+    fi
 fi
 
 # ─── Шаг 6: Ollama ──────────────────────────────────────────────────────
 step "6/13: Ollama"
 if command -v ollama &>/dev/null; then
-    ok "Ollama установлен"
+    ok "Ollama установлен — нейросети уже думают за вас"
 else
     if $CHECK_MODE; then warn "Ollama не найден"; exit 1; fi
     info "Устанавливаю Ollama..."
@@ -142,7 +152,7 @@ else
     ok "Ollama установлен"
 fi
 
-# Запуск Ollama если не работает
+# Запуск Ollama
 if ! pgrep -x "ollama" &>/dev/null; then
     if ! $CHECK_MODE; then
         info "Запускаю Ollama..."
@@ -162,6 +172,12 @@ if ! pgrep -x "ollama" &>/dev/null; then
     fi
 fi
 
+# ═══════════════════════════════════════════════════════════
+# ФАЗА 2: МОДЕЛИ И ПРИЛОЖЕНИЕ
+# ═══════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}━━━ Фаза 2: Модели и приложение ━━━${NC}"
+
 # ─── Шаг 7: AI модели ──────────────────────────────────────────────────
 step "7/13: AI модели"
 OLLAMA_READY=false
@@ -171,52 +187,51 @@ if [ "$OLLAMA_READY" = true ]; then
     MODEL="${JARVICE_MODEL:-glm-5.1:cloud}"
     EMBED_MODEL="nomic-embed-text:latest"
 
-    # Основная модель
     if ollama list 2>/dev/null | grep -q "$(echo $MODEL | cut -d: -f1)"; then
         ok "Модель $MODEL доступна"
     else
         if $QUICK_MODE || $CHECK_MODE; then
             warn "Модель $MODEL не скачана. Запустите: ollama pull $MODEL"
         else
-            info "Скачиваю модель $MODEL..."
+            info "Скачиваю модель $MODEL (облачная, нужен интернет)..."
             if ollama pull "$MODEL" 2>&1; then
                 ok "Модель $MODEL скачана"
             else
                 warn "Облачная модель недоступна — скачиваю локальную qwen3:14b (8.6 ГБ)..."
+                info "Это может занять 5-10 минут. Кофе? ☕"
                 if ollama pull "qwen3:14b" 2>&1; then
                     ok "Локальная модель qwen3:14b скачана"
                 else
-                    err "Не удалось скачать ни одну модель. Продолжаем без модели."
+                    err "Не удалось скачать ни одну модель."
+                    err "Проверьте интернет и запустите: ollama pull $MODEL"
                 fi
             fi
         fi
     fi
 
-    # Модель эмбеддингов
     if ollama list 2>/dev/null | grep -q "nomic-embed-text"; then
         ok "Модель эмбеддингов доступна"
     else
         if $QUICK_MODE || $CHECK_MODE; then
             warn "Модель эмбеддингов не скачана. Запустите: ollama pull $EMBED_MODEL"
         else
-            info "Скачиваю модель эмбеддингов (274 МБ)..."
+            info "Скачиваю модель эмбеддингов (274 МБ — меньше одного мема)..."
             ollama pull "$EMBED_MODEL" 2>&1 && ok "Модель эмбеддингов скачана" || \
                 warn "Ошибка скачивания — поиск по памяти может не работать"
         fi
     fi
 else
-    warn "Ollama не запущен — модели не скачаны. Запустите Ollama и выполните: ollama pull glm-5.1:cloud nomic-embed-text:latest"
+    warn "Ollama не запущен — модели не скачаны."
+    echo "  ${DIM}Запустите Ollama и выполните: ollama pull glm-5.1:cloud nomic-embed-text:latest${NC}"
 fi
 
-# ─── Шаг 8: Авторизация Ollama Cloud ────────────────────────────────────
+# ─── Шаг 8: Авторизация Ollama Cloud ──────────────────────────────────
 step "8/13: Ollama Cloud"
-# Публичные облачные модели работают без авторизации.
-# Спрашиваем signin только если модели не отвечают.
 if [ "$OLLAMA_READY" = true ]; then
     CLOUD_TEST=$(curl -sf --max-time 20 http://localhost:11434/api/generate \
         -d '{"model":"glm-5.1:cloud","prompt":"привет","stream":false}' 2>/dev/null || echo "")
     if [ -n "$CLOUD_TEST" ]; then
-        ok "Облачные модели работают (авторизация не нужна)"
+        ok "Облачные модели работают (авторизация не нужна — редкость!)"
     else
         echo ""
         echo "  ${BOLD}${YELLOW}⚡ Облачным моделям нужна авторизация${NC}"
@@ -240,13 +255,11 @@ if $CHECK_MODE; then
 else
     mkdir -p "$JARVICE_DIR"
 
-    # Создание venv
     if [ ! -d "$VENV_DIR/bin" ]; then
         "$PYTHON_CMD" -m venv "$VENV_DIR"
         ok "Python venv создан ($PYTHON_CMD)"
     fi
 
-    # Активация venv
     if [ -f "$VENV_DIR/bin/activate" ]; then
         source "$VENV_DIR/bin/activate" 2>/dev/null || {
             err "Venv сломан — пересоздаю..."
@@ -261,7 +274,6 @@ else
 
     pip install --upgrade pip --quiet 2>/dev/null || true
 
-    # Клонирование и установка
     CLONE_DIR="$JARVICE_DIR/src/the-jarvice"
     if [ -d "$CLONE_DIR" ] && [ -f "$CLONE_DIR/pyproject.toml" ]; then
         cd "$CLONE_DIR"
@@ -269,20 +281,31 @@ else
     else
         info "Клонирую с GitHub..."
         mkdir -p "$JARVICE_DIR/src"
-        git clone "$GITHUB_REPO" "$CLONE_DIR" --depth 1
-        cd "$CLONE_DIR"
+        if git clone "$GITHUB_REPO" "$CLONE_DIR" --depth 1 2>&1; then
+            cd "$CLONE_DIR"
+        else
+            err "Не удалось клонировать репозиторий. Проверьте интернет."
+            exit 1
+        fi
     fi
 
     if [ -f "pyproject.toml" ]; then
-        pip install . --quiet 2>/dev/null || pip install -e . --quiet 2>/dev/null
-        ok "the-jarvice установлен"
+        if pip install . --quiet 2>&1; then
+            ok "the-jarvice установлен — добро пожаловать в клуб"
+        elif pip install -e . --quiet 2>&1; then
+            ok "the-jarvice установлен (dev-режим)"
+        else
+            err "Не удалось установить the-jarvice."
+            err "Проверьте лог выше и запустите установку повторно."
+            exit 1
+        fi
     else
         err "Исходники Jarvice не найдены: $CLONE_DIR"
+        exit 1
     fi
 
     cd "$HOME"
 
-    # Добавление venv в PATH
     SHELL_RC="$HOME/.zshrc"
     if [ -f "$HOME/.bashrc" ] && [ "$SHELL" = "/bin/bash" ]; then
         SHELL_RC="$HOME/.bashrc"
@@ -298,6 +321,12 @@ else
     export PATH="$VENV_DIR/bin:$PATH"
 fi
 
+# ═══════════════════════════════════════════════════════════
+# ФАЗА 3: НАСТРОЙКА И ПОДКЛЮЧЕНИЕ
+# ═══════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}━━━ Фаза 3: Настройка и подключение ━━━${NC}"
+
 # ─── Шаг 10: Настройка OpenClaw ────────────────────────────────────────
 step "10/13: Настройка OpenClaw"
 if $CHECK_MODE; then
@@ -306,7 +335,6 @@ else
     mkdir -p "$OPENCLAW_WORKSPACE"
     mkdir -p "$OPENCLAW_WORKSPACE/memory"
 
-    # Файлы рабочего пространства агента
     if [ ! -f "$OPENCLAW_WORKSPACE/AGENTS.md" ]; then
         cat > "$OPENCLAW_WORKSPACE/AGENTS.md" << 'AGENTSEOF'
 # AGENTS.md — The Jarvice
@@ -375,7 +403,6 @@ MEMEOF
         ok "Создан MEMORY.md"
     fi
 
-    # Конфиг Jarvice с облачными моделями
     if [ ! -f "$JARVICE_DIR/config.yaml" ]; then
         cat > "$JARVICE_DIR/config.yaml" << 'CFGEOF'
 # The Jarvice Configuration — v1
@@ -437,27 +464,31 @@ step "11/13: Учётные данные"
 echo ""
 echo "  ${BOLD}Подключаем сервисы.${NC}"
 echo "  ${DIM}Нажмите Enter, чтобы пропустить любой шаг.${NC}"
+echo "  ${DIM}Пароли хранятся в Keychain, а не в файлах. Мы не такие.${NC}"
 echo ""
 
 if ! $CHECK_MODE && ! $QUICK_MODE; then
-    # ── Telegram Bot Token ──────────────────────────────────────────────
     echo "  ${BOLD}1/3 Токен Telegram-бота${NC}"
     echo "  1. Откройте t.me/BotFather"
     echo "  2. Отправьте /newbot"
     echo "  3. Выберите имя (например «Мой Ассистент»)"
     echo "  4. Выберите username (например «my_assistant_bot»)"
     echo "  5. Скопируйте токен (формат: 7123456789:AA...)"
+    echo "  ${DIM}Нет, это не номер кредитки. Хотя формат похож.${NC}"
     echo ""
     read -p "  Токен Telegram-бота: " TG_TOKEN
     if [ -n "$TG_TOKEN" ]; then
-        security add-generic-password -U -s "the-jarvice.telegram-bot" -a "bot-token" -w "$TG_TOKEN" 2>/dev/null && \
-            ok "Токен сохранён в Keychain" || \
-            { echo "$TG_TOKEN" > "$JARVICE_DIR/.telegram-token"; chmod 600 "$JARVICE_DIR/.telegram-token"; ok "Токен сохранён в файл"; }
+        if security add-generic-password -U -s "the-jarvice.telegram-bot" -a "bot-token" -w "$TG_TOKEN" 2>/dev/null; then
+            ok "Токен сохранён в Keychain"
+        else
+            echo "$TG_TOKEN" > "$JARVICE_DIR/.telegram-token"
+            chmod 600 "$JARVICE_DIR/.telegram-token"
+            ok "Токен сохранён в файл (Keychain недоступен)"
+        fi
     else
         info "Пропущено — настройте позже: the-jarvice configure --quick"
     fi
 
-    # ── Exchange ────────────────────────────────────────────────────────
     echo ""
     echo "  ${BOLD}2/3 Учётные данные Exchange${NC} (опционально — для сводок по почте)"
     echo "  ${DIM}Пропустите, если не используете корпоративный Exchange${NC}"
@@ -467,28 +498,31 @@ if ! $CHECK_MODE && ! $QUICK_MODE; then
         read -s -p "  Пароль Exchange (скрыт): " EX_PASS
         echo ""
         if [ -n "$EX_PASS" ]; then
-            security add-generic-password -U -s "the-jarvice.exchange" -a "$EX_EMAIL" -w "$EX_PASS" 2>/dev/null && \
-                ok "Учётные данные Exchange сохранены в Keychain" || \
+            if security add-generic-password -U -s "the-jarvice.exchange" -a "$EX_EMAIL" -w "$EX_PASS" 2>/dev/null; then
+                ok "Учётные данные Exchange сохранены в Keychain"
+            else
                 warn "Не удалось сохранить в Keychain — запустите: the-jarvice configure --quick"
+            fi
         fi
     else
         info "Пропущено — настройте позже: the-jarvice configure --quick"
     fi
 
-    # ── Подключение бота к OpenClaw ─────────────────────────────────────
     echo ""
     echo "  ${BOLD}3/3 Подключение бота к OpenClaw${NC}"
-    echo "  Это свяжет вашего бота с системой агентов."
+    echo "  ${DIM}Это свяжет вашего бота с системой агентов.${NC}"
     echo ""
     if [ -n "${TG_TOKEN:-}" ]; then
         info "Подключаю Telegram-канал к OpenClaw..."
-        openclaw channels add telegram --token "$TG_TOKEN" 2>/dev/null && ok "Telegram-канал добавлен" || {
+        if openclaw channels add telegram --token "***" 2>/dev/null; then
+            ok "Telegram-канал добавлен"
+        else
             echo ""
             echo "  ${YELLOW}Автоматическая настройка не удалась. Настройте вручную:${NC}"
             echo "  1. Запустите: ${BOLD}openclaw channels add${NC}"
             echo "  2. Выберите Telegram"
-            echo "  3. Введите токен бота: ${DIM}$TG_TOKEN${NC}"
-        }
+            echo "  3. Введите токен бота"
+        fi
     else
         echo "  После создания бота запустите:"
         echo "    ${BOLD}openclaw channels add${NC}"
@@ -507,8 +541,14 @@ if ! $CHECK_MODE; then
         mkdir -p "$dir"
     done
     chmod 700 "$RED_DIR"
-    ok "Директории созданы (PII RED: chmod 700)"
+    ok "Директории созданы (PII RED: chmod 700 — приватно как надо)"
 fi
+
+# ═══════════════════════════════════════════════════════════
+# ФАЗА 4: ЗАПУСК
+# ═══════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}━━━ Фаза 4: Запуск ━━━${NC}"
 
 # ─── Шаг 13: Запуск Gateway ────────────────────────────────────────────
 step "13/13: Запуск Gateway"
@@ -518,11 +558,14 @@ if ! $CHECK_MODE; then
     else
         info "Запускаю OpenClaw Gateway..."
         openclaw gateway run &>/dev/null &
-        sleep 3
+        for i in 1 2 3 4 5; do
+            sleep 2
+            curl -sf http://localhost:19000/health &>/dev/null && break
+        done
         if curl -sf http://localhost:19000/health &>/dev/null; then
             ok "Gateway запущен"
         else
-            warn "Gateway не запустился — запустите вручную: openclaw gateway run"
+            warn "Gateway не запустился за 10 сек — запустите вручную: openclaw gateway run"
         fi
     fi
 fi
@@ -534,7 +577,6 @@ echo "${GREEN}${BOLD}  ✅ Установка завершена!${NC}"
 echo "${BOLD}══════════════════════════════════════════════════════${NC}"
 echo ""
 
-# Проверка здоровья
 ISSUES=0
 
 if ! curl -sf http://localhost:11434/api/tags &>/dev/null; then
@@ -543,12 +585,23 @@ if ! curl -sf http://localhost:11434/api/tags &>/dev/null; then
 fi
 
 if ! command -v the-jarvice &>/dev/null && [ ! -f "$VENV_DIR/bin/the-jarvice" ]; then
-    echo "  ${YELLOW}⚠️  the-jarvice не в PATH — перезапустите Terminal или: source ~/.zshrc${NC}"
+    echo "  ${YELLOW}⚠️  the-jarvice не в PATH — перезапустите Terminal${NC}"
+    echo "  ${YELLOW}   или выполните: source ~/.zshrc${NC}"
     ISSUES=$((ISSUES + 1))
 fi
 
 if [ ! -f "$JARVICE_DIR/config.yaml" ]; then
     echo "  ${YELLOW}⚠️  config.yaml не найден — запустите: the-jarvice configure --quick${NC}"
+    ISSUES=$((ISSUES + 1))
+fi
+
+HAS_EXCHANGE=false
+HAS_TELEGRAM=false
+[ -n "${TG_TOKEN:-}" ] && HAS_TELEGRAM=true
+[ -n "${EX_EMAIL:-}" ] && HAS_EXCHANGE=true
+
+if [ "$HAS_EXCHANGE" = false ] && [ "$HAS_TELEGRAM" = false ]; then
+    echo "  ${YELLOW}⚠️  Нет источников данных — настройте Exchange или Telegram${NC}"
     ISSUES=$((ISSUES + 1))
 fi
 
@@ -569,7 +622,6 @@ echo "    ✅ Директории PII (RED/GREEN)"
 echo "    ✅ Конфиг с облачными моделями"
 echo ""
 
-# Что нужно сделать вручную
 echo "  ${BOLD}Дальнейшие шаги:${NC}"
 echo ""
 
@@ -594,11 +646,17 @@ echo ""
 echo "  ${BOLD}Первый запуск:${NC}"
 echo "    the-jarvice run --once"
 echo ""
+echo "  ${DIM}После первого запуска вы получите сводку в Telegram в течение 30 секунд.${NC}"
+echo ""
 echo "  ${BOLD}Расписание сводок:${NC}"
 echo "    the-jarvice enable"
 echo ""
 echo "  ${BOLD}Запуск Gateway (если не запущен):${NC}"
 echo "    openclaw gateway run"
+echo ""
+echo "  ${DIM}Если что-то не работает:${NC}"
+echo "  ${DIM}  1. Перезапустите Terminal (помогает в 90% случаев)${NC}"
+echo "  ${DIM}  2. Напишите Вадиму (помогает в оставшихся 10%)${NC}"
 echo ""
 echo "  ${DIM}Конфиг:    ~/.the-jarvice/config.yaml${NC}"
 echo "  ${DIM}OpenClaw:  ~/.openclaw/${NC}"
