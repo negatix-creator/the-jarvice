@@ -9,50 +9,57 @@ The Jarvice installs a complete system: OpenClaw agent framework + data scrapers
 - 📧 **Exchange scraping** — email + calendar via EWS
 - 💬 **Teams scraping** — chats + meetings via IC3 token
 - 🔒 **PII anonymization** — RED/GREEN pipeline, names/emails never leave your machine
-- 🤖 **AI summaries** — cloud models (glm-5.1:cloud) or local (qwen3:14b)
+- 🤖 **AI summaries** — cloud models (glm-5.2:cloud primary, glm-5.1:cloud fallback)
 - 🧠 **Memory & embeddings** — nomic-embed-text for semantic search
 - 📲 **Telegram delivery** — HTML summaries with smart chunking
 - ⏰ **Scheduled summaries** — morning + evening via cron
 - 🛡️ **Security-first** — Keychain credentials, log sanitization, audit log
 - 🔧 **Full system** — OpenClaw + Jarvice + Ollama + agent, one command
+- 🚀 **One-command deploy** — `scripts/deploy-openclaw-{macos,linux}.sh`
 
 ## ⚡ Quick Start
 
-One command installs everything:
+### Option A: The Jarvice full pipeline (with scrapers)
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/negatix-creator/the-jarvice/main/setup.sh)
 ```
 
-This installs:
-1. **Homebrew** (if missing)
-2. **Python 3.12** (if missing)
-3. **Node.js** (for OpenClaw)
-4. **OpenClaw** (agent framework)
-5. **Ollama** + models (glm-5.1:cloud + nomic-embed-text)
-6. **The Jarvice** (data pipeline + summaries)
-7. **OpenClaw workspace** (AGENTS.md, SOUL.md, MEMORY.md)
-8. **Config** with cloud models preconfigured
+This installs: Homebrew, Python 3.12, Node.js, OpenClaw, Ollama + models, The Jarvice pipeline, workspace, config.
 
-Then the script interactively asks for:
-- **Telegram bot token** (from @BotFather)
-- **Exchange credentials** (optional, for email/calendar)
-- **OpenClaw channel setup** (links bot to agent)
+### Option B: Just OpenClaw + bot (no scrapers)
 
-### Manual steps after setup
+For deploying an OpenClaw agent on any macOS or Linux machine — no scrapers, just bot + memory + cloud models:
+
+**macOS:**
+```bash
+scp scripts/deploy-openclaw-macos.sh user@host:/tmp/
+scp ~/.ollama/id_ed25519 user@host:~/.ollama/id_ed25519
+scp ~/.ollama/id_ed25519.pub user@host:~/.ollama/id_ed25519.pub
+ssh user@host 'BOT_TOKEN=<token> OWNER_TG_ID=<id> OLLAMA_KEY=*** bash /tmp/deploy-openclaw-macos.sh'
+```
+
+**Linux (Ubuntu/Debian/Fedora/CentOS/Alpine):**
+```bash
+scp scripts/deploy-openclaw-linux.sh user@host:/tmp/
+scp ~/.ollama/id_ed25519 user@host:~/.ollama/id_ed25519
+scp ~/.ollama/id_ed25519.pub user@host:~/.ollama/id_ed25519.pub
+ssh user@host 'BOT_TOKEN=<token> OWNER_TG_ID=<id> OLLAMA_KEY=*** bash /tmp/deploy-openclaw-linux.sh'
+```
+
+Both deploy scripts:
+- Install packages (Node, OpenClaw, Ollama)
+- Copy Ollama SSH-key for cloud model authorization
+- Create config (glm-5.2:cloud + glm-5.1:cloud, Telegram bot, memory health)
+- Set up auto-start services (LaunchAgent on macOS, systemd on Linux)
+- Run 8-9 smoke tests
+
+### After setup
 
 ```bash
-# Verify everything works
-the-jarvice doctor && openclaw status
-
-# Run first summary
-the-jarvice run --once
-
-# Schedule daily summaries
-the-jarvice enable
-
-# Start OpenClaw gateway (if not running)
-openclaw gateway run
+the-jarvice doctor && openclaw status   # verify
+the-jarvice run --once                   # first summary
+the-jarvice enable                        # schedule daily summaries
 ```
 
 ## 📋 Example Summary
@@ -112,16 +119,16 @@ openclaw gateway run
                                    Telegram ──► You
 ```
 
-- **Cloud Mode** — anonymized data to glm-5.1:cloud (default, no GPU needed)
-- **Local Mode** — everything on-device with qwen3:14b (8.6 GB)
+- **Cloud Mode** — anonymized data to glm-5.2:cloud (primary) + glm-5.1:cloud (fallback). No GPU needed.
 - **Enhanced Mode** — cloud + knowledge graph (planned)
 
 ## 📋 Requirements
 
-- macOS 12+ (Apple Silicon or Intel)
-- 3 GB free disk space (cloud models) or 12 GB (local models)
+- macOS 12+ (Apple Silicon or Intel) OR Linux (Ubuntu/Debian/Fedora/CentOS)
+- 3 GB free disk space
 - Internet connection (for cloud models and Telegram)
 - Telegram account (for bot creation)
+- Ollama SSH-key (for cloud model authorization — provided by deploy script)
 
 ## 🔒 Security
 
@@ -143,11 +150,20 @@ the-jarvice configure --quick
 
 # Ollama issues
 ollama list                    # check models
-ollama pull glm-5.1:cloud      # re-download model
-open -a Ollama                 # restart Ollama
+ollama pull glm-5.2:cloud      # re-download model
+
+# Cloud model 403 error?
+# → Ollama SSH-key not authorized. Run deploy script with OLLAMA_KEY param.
+
+# Gateway crash loop?
+# → Check config: openclaw config validate
+# → Common cause: invalid plugins.entries.*.config (remove unsupported fields)
 
 # View logs
-cat ~/.the-jarvice/logs/cron.log
+# macOS:
+cat /tmp/openclaw-gateway.log
+# Linux:
+sudo journalctl -u openclaw-gateway --no-pager -n 30
 
 # Reset and re-setup
 the-jarvice uninstall
@@ -181,4 +197,4 @@ MIT
 
 ---
 
-*The Jarvice v0.3.0 — Full-stack AI assistant with privacy-first approach*
+*The Jarvice v0.4.0 — Full-stack AI assistant with privacy-first approach*

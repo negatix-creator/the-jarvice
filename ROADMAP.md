@@ -1,6 +1,6 @@
 # The Jarvice — Roadmap
 
-> Последнее обновление: 2026-06-17
+> Последнее обновление: 2026-06-18
 
 ## Текущий статус
 
@@ -28,27 +28,29 @@
 - ✅ **Interactive Credentials:** Telegram token, Exchange, Ollama signin
 - ✅ **Config Generation:** config.yaml with cloud models preconfigured
 - ✅ **Nightly Backup:** BACKUP_OK (7.0G, ротация 10/10)
-- ✅ **Gateway stability:** PID 88930, RSS ~825MB, uptime 12д 9ч (стабильно)
+- ✅ **Gateway stability:** PID 1448, RSS ~622MB (перезагружен 03:00, uptime 6 мин)
 - ✅ **Teams Sync v2:** 2 транскрипта (CPO StandUp, Согласование приказа)
 - ⚠️ **Teams Token Refresh:** протух ~13:34 04.06, авторефреш нестабилен (workaround: 48h window + 30s timeout)
-- ✅ **VPS health:** load 0.23, swap 67MB (RAM 299MB used), uptime 54+ дней
+- ✅ **VPS health:** load стабильно, swap ~70MB (RAM ~300MB used), uptime 54+ дней
 - ✅ **First Client Deployment:** VPS 2.58.65.124 (Ubuntu 24.04, 4GB RAM)
 - ✅ **Brain Ingest v2.1:** LLM Cross-Validation (7 фаз: Collect → Extract → verify.py → llm_verify.py → Merge → Update → Report)
 - ✅ **OpenClaw 2026.6.1:** обновлён на клиентской машине, gateway стабильно работает
 - ✅ **Gemma 3:27b:** добавлена в Ollama (gemma3:27b-cloud), используется для задач medium-сложности
-- ⚠️ **Jarvis MEMORY.md:** 22-23KB (превышает порог 20KB) — требуется компактизация (5 срабатываний watchdog 16.06)
+- ⚠️ **Jarvis MEMORY.md:** 22KB+ (превышает порог 20KB) — требуется компактизация (несколько срабатываний watchdog 16-17.06)
 - ✅ **Jarvis MEMORY.md compacted:** 19.8 KB ✅ (в норме, компактизирован с 23.4 KB 11.06)
 - ⚠️ **Jarvis model change:** deepseek-v4-pro:cloud → glm-5.1:cloud (fallbacks: kimi-k2.6:cloud, deepseek-v4-flash:cloud) — 2026-06-05, по причине timeout deepseek
 - ⚠️ **Teams Token Refresh**: стабильное обновление — workaround с 48h window + 30s HTTP timeout, но token протух 04.06
 - ⚠️ **Brain Ingest cron:** дневной (15:00) отсутствует в cron list — известная проблема
 - ✅ **Brain Stats (Ultron):** 2 крон-джоба (утро 15:00, вечер 03:10) — работают, документированы
-- ✅ **Config hash baseline:** sha256 b0f29774b752e129 ✅ (актуален, совпадает с текущим)
+- ⚠️ **Config hash baseline:** sha256 c130af9a0628fb263a546b31f687785b2ea6a7885e6803aa8b3bfb53c060ebfd ⚠️ (НЕ совпадает с baseline 1334b731156a70ad55f8edc3de3ab351d7ce0bde2b0f3be6be84b48b2a1d014c, конфиг изменён 18.06)
 - ✅ **OpenClaw alerts log:** 1 запись 14.06 (config modified alert — ожидается при обновлении)
-- ⚠️ **Friday Daily Digest:** consecutiveErrors=3 (Telegram delivery failed, 17h ago) — не восстановлено
-- ⚠️ **Friday Weekly Docs Update:** Telegram delivery failed (7d ago) — не восстановлено
+- ⚠️ **Friday Daily Digest:** consecutiveErrors=3 (Telegram delivery failed, 18h+ ago) — не восстановлено
+- ⚠️ **Friday Weekly Docs Update:** Telegram delivery failed (8d ago) — не восстановлено
 - ⚠️ **GLM-5.2:** доступна от Zhipu (13.06), 1M контекст, MIT лицензия — ждём в Ollama cloud
 - ⚠️ **Ollama brew outdated:** ollama в списке outdated brew (17.06) — требует `brew upgrade`
-- ✅ **Config integrity:** sha256 b0f29774b752e129 ✅ (совпадает с baseline)
+- ⚠️ **Homebrew updated:** 5.1.15 → 6.0.2 (17.06)
+- ⚠️ **Config hash changed:** sha256 baseline 1334b731... ≠ текущий c130af9a... (18.06)
+- ✅ **Config integrity:** sha256 c130af9a0628fb263a546b31f687785b2ea6a7885e6803aa8b3bfb53c060ebfd ⚠️ (НЕ совпадает с baseline)
 
 ### 3 тира (Product Council)
 | Тир | Модель | Данные | Статус |
@@ -122,18 +124,19 @@ configure --non-interactive, uninstall PII wipe, status, Linux support, Makefile
 
 **Реальный опыт (2026-06-04):** Первый клиентский деплой на VPS 2.58.65.124. 29 известных проблем выявлено. Деплой был ручной (SSH + scp), не через Docker/Ansible. Playbook: `docs/deploy-jarvis-playbook.md` (1180 строк, 29 known issues). Опыт Алексея (problemgoout-ops/deploy-agent): Часть -1 (Защита сессии, 8 правил).
 
-**Статус инфраструктуры (2026-06-16):**
-- VPS 78.17.56.204 (prod): MTProto proxy ✅ Up 5+ дней, load 0.23, swap 1.0Gi, uptime 53+ дней
+**Статус инфраструктуры (2026-06-18):**
+- VPS 78.17.56.204 (prod): MTProto proxy ✅ Up 6+ дней, load стабильно, swap 1.0Gi, uptime 54+ дней
 - VPS 2.58.65.124 (client): OpenClaw gateway inactive, swap настроен, cron не добавлены
 - Teams sync: токен протухает ~20ч, авторефреш нестабилен (протух 04.06 ~13:34)
-- Gateway: PID 65060, RSS ~832MB, uptime 11д 9ч (стабильно)
-- Brain Ingest ночной: ✅ ok (24h ago)
+- Gateway: PID 1448, RSS ~622MB, uptime 6 мин (перезагружен 03:00, стабильно)
+- Brain Ingest ночной: ✅ ok (running now)
 - Brain Stats (Ultron): 2 крон-джоба (утро 15:00, вечер 03:10) — работают
-- Config hash: sha256 b0f29774b752e129 ✅ (совпадает с baseline)
-- Friday Daily Digest: ❌ error (17h ago, Telegram delivery failed, consecutiveErrors=3) — не восстановлено
-- Friday Weekly Docs Update: ❌ error (7d ago, Telegram delivery failed) — не восстановлено
+- Config hash: sha256 c130af9a0628fb263a546b31f687785b2ea6a7885e6803aa8b3bfb53c060ebfd ⚠️ (НЕ совпадает с baseline 1334b731156a70ad55f8edc3de3ab351d7ce0bde2b0f3be6be84b48b2a1d014c — конфиг изменён 18.06)
+- Friday Daily Digest: ❌ error (18h+ ago, Telegram delivery failed, consecutiveErrors=3) — не восстановлено
+- Friday Weekly Docs Update: ❌ error (8d ago, Telegram delivery failed) — не восстановлено
 - HERA перепрофилирована в бизнес-консультанта МИТ-оф (14.06)
-- Jarvis MEMORY.md: 23KB (превышает порог 20KB) — требуется компактизация
+- Jarvis MEMORY.md: 22KB+ (превышает порог 20KB) — требуется компактизация (срабатывания watchdog 16-17.06)
+- **Homebrew updated:** 5.1.15 → 6.0.2 (17.06)
 
 | # | Задача | Приоритет | Оценка | Статус |
 |---|--------|-----------|-------|--------|
@@ -165,9 +168,11 @@ configure --non-interactive, uninstall PII wipe, status, Linux support, Makefile
 - #28: `--non-interactive` не существует — `openclaw onboard --install-daemon` без флага ✅
 - #29: Скрипты в дефолтном workspace удаляются при чистке — Скрипты в agent-specific workspace ✅
 - **#30: Friday Daily Digest — Telegram delivery failed** — consecutiveErrors=3, 14.06. Не восстановлено. Возможно: delivery channel/to неправильно настроены, или Telegram API rate limit.
-- **#31: EDITH Месячный отчёт — error** — 14d ago, не восстановлено.
+- **#31: EDITH Месячный отчёт — error** — 15d ago, не восстановлено.
 - **#32: Brain Ingest дневной (15:00) — отсутствует в cron list** — известная проблема, не добавлен.
 - **#33: Ollama brew outdated** — ollama в списке outdated brew пакетов (17.06). Требует `brew upgrade ollama`.
+- **#34: Config hash changed** — sha256 не совпадает с baseline (2026-06-18). Конфиг изменён.
+- **#35: Jarvis MEMORY.md overflow** — 22KB+ > 20KB порога (16-17.06). Нужна компактизация.
 
 **KPIs (обновлены по реальному опыту):**
 - git clone → работающий Jarvice: ≤ 30 мин на чистой VPS (реально: ~40 мин manual, target: 15 мин с Ansible)
@@ -292,7 +297,7 @@ configure --non-interactive, uninstall PII wipe, status, Linux support, Makefile
 - **Friday Daily Digest error (Telegram delivery)** → выявлено 2026-06-08, **error 2026-06-13**: Telegram delivery failed, consecutiveErrors=3. Возможно: delivery channel/to неправильно настроены, или Telegram API rate limit. Не восстановлено.
 - **Teams token refresh reliability** → выявлено 2026-06-08, **workaround работает**: custom script с 48h window + 30s HTTP timeout, 2 транскрипта успешно скачаны (08.06), token обновлён 09.06 15:00, **протух 04.06 ~13:34** — авторефреш нестабилен (net::ERR_TIMED_OUT, MFA/captcha)
 - **Brain Stats (Ultron) cron jobs** → добавлены 2026-06-13: утро 15:00 + вечер 03:10, 2 крон-джоба документированы и работают
-- **Config hash baseline** → обновлён 2026-06-14: sha256 b0f29774b752e129, совпадает с текущим
+- **Config hash baseline** → обновлён 2026-06-14: sha256 b0f29774b752e129, совпадает с текущим → **НЕ СОВПАДАЕТ с 2026-06-18**: текущий c130af9a0628fb263a546b31f687785b2ea6a7885e6803aa8b3bfb53c060ebfd
 
 ---
 
@@ -326,6 +331,8 @@ configure --non-interactive, uninstall PII wipe, status, Linux support, Makefile
 | **Config hash baseline restored** | 2026-06-14 | sha256 b0f29774b752e129 — baseline обновлён и совпадает с текущим |
 | **Jarvis MEMORY.md overflow (повторное)** | 2026-06-17 | 22-23KB > 20KB порога — 5 срабатываний watchdog 16.06, требуется компактизация |
 | **Ollama brew outdated** | 2026-06-17 | ollama, node, nss, pandoc, poppler в списке outdated brew (13 пакетов) |
+| **Homebrew updated** | 2026-06-17 | 5.1.15 → 6.0.2 (17.06) |
+| **Config hash changed** | 2026-06-18 | sha256 baseline 1334b731... ≠ текущий c130af9a... — конфиг изменён |
 
 ---
 
