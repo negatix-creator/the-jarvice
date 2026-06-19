@@ -1,563 +1,75 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Jarvice — AI-помощник для безопасной работы с корпоративным контекстом</title>
-<meta name="description" content="Jarvice превращает информационный шум из почты, чатов и документов в понятные действия — не раскрывая персональные данные внешнему AI.">
+<!doctype html><html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jarvice — AI-помощник с контекстом вашего бизнеса</title>
+<meta name="description" content="Jarvice собирает главное из рабочих систем, готовит управленческие сводки, помогает принимать решения и сохраняет знания компании.">
+<meta property="og:title" content="Jarvice — главное о бизнесе до того, как вы открыли почту"><meta name="theme-color" content="#050810">
 <style>
-:root{
-  --bg:#070b16;
-  --bg-2:#0a1020;
-  --panel:rgba(18,27,48,0.6);
-  --panel-solid:#101830;
-  --border:rgba(86,120,200,0.18);
-  --border-strong:rgba(86,120,200,0.35);
-  --text:#eaf0ff;
-  --muted:#9fb0d0;
-  --muted-2:#6f80a3;
-  --accent:#2f7bff;
-  --accent-2:#4f9cff;
-  --accent-glow:rgba(47,123,255,0.45);
-  --green:#34d399;
-  --red:#f87171;
-  --radius:18px;
-  --maxw:1160px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-a{color:inherit;text-decoration:none}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
-.accent{color:var(--accent-2)}
-.muted{color:var(--muted)}
+:root{--bg:#050810;--card:#0d1726;--line:rgba(132,163,211,.17);--line2:rgba(58,156,255,.4);--text:#f5f7fc;--muted:#9eacc1;--blue:#288eff;--blue2:#83bdff;--cyan:#20d5e7;--green:#43d69c;--purple:#9a76ff;--amber:#f2b95f;--red:#ff7887;--max:1180px;--r:22px}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;overflow-x:hidden}body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 82% 5%,rgba(40,142,255,.18),transparent 34%),linear-gradient(180deg,#050810,#070c15 70%,#050810)}body:after{content:"";position:fixed;inset:0;z-index:-1;opacity:.3;background-image:linear-gradient(rgba(127,155,203,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(127,155,203,.05) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(#000,transparent 78%)}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}.wrap{width:min(var(--max),calc(100% - 44px));margin:auto}.blue{color:var(--blue2)}.muted{color:var(--muted)}.topbar{position:fixed;z-index:50;inset:0 0 auto;background:rgba(5,8,16,.76);backdrop-filter:blur(18px);border-bottom:1px solid transparent}.topbar.scrolled{border-color:var(--line)}.nav{height:70px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:11px;font-weight:850;letter-spacing:.12em}.logo{width:39px;filter:drop-shadow(0 0 10px rgba(32,213,231,.22))}.links{display:flex;align-items:center;gap:24px}.links>a:not(.nav-cta){font-size:14px;color:var(--muted)}.nav-cta,.btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;padding:0 20px;border-radius:13px;border:1px solid transparent;font-weight:750;transition:.2s}.nav-cta,.btn-primary{background:linear-gradient(135deg,#1479ef,#38a1ff);box-shadow:0 10px 34px rgba(40,142,255,.27)}.btn:hover,.nav-cta:hover{transform:translateY(-2px)}.btn-ghost{border-color:var(--line2);background:rgba(255,255,255,.035)}.burger{display:none;width:44px;height:44px;border:1px solid var(--line);background:var(--card);color:#fff;border-radius:12px}
+section{padding:100px 0;position:relative}.hero{padding:150px 0 85px;min-height:780px;display:flex;align-items:center}.hero-grid{display:grid;grid-template-columns:1.03fr .97fr;gap:64px;align-items:center}.eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 12px "SFMono-Regular",Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;color:#b9d8ff;border:1px solid var(--line2);background:rgba(40,142,255,.07);padding:7px 12px;border-radius:99px}.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}h1{font-size:clamp(47px,6.2vw,78px);line-height:.99;letter-spacing:-.065em;margin:24px 0}h1 span{background:linear-gradient(110deg,#fff,#b5d6ff 45%,#39a0ff);-webkit-background-clip:text;color:transparent}.lede{font-size:clamp(18px,2vw,22px);line-height:1.48;color:#b6c1d2;margin:0}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:34px 0 28px}.trust{display:flex;gap:12px 22px;flex-wrap:wrap;color:var(--muted);font-size:14px}.trust span:before{content:"✓";color:var(--green);margin-right:7px}
+.product{position:relative;min-height:520px;display:grid;place-items:center}.product:before{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(82,159,255,.13);border-radius:50%;box-shadow:0 0 0 75px rgba(40,142,255,.025)}.brief{position:relative;z-index:2;width:min(100%,480px);border:1px solid rgba(96,175,255,.42);border-radius:25px;background:linear-gradient(155deg,#111d31,#070c16);box-shadow:0 35px 100px rgba(0,0,0,.48);overflow:hidden;transform:perspective(1200px) rotateY(-3deg)}.brief-head{display:flex;justify-content:space-between;align-items:center;padding:21px 23px;border-bottom:1px solid var(--line)}.brief-title{display:flex;gap:11px;align-items:center}.mini{width:33px}.brief-title b{display:block;font-size:15px}.brief-title span,.brief-time{display:block;color:#64738a;font-size:11px}.brief-body{padding:13px}.brief-row{display:grid;grid-template-columns:38px 1fr auto;gap:13px;padding:15px 12px}.brief-row+.brief-row{border-top:1px solid var(--line)}.bi{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:rgba(40,142,255,.12);color:var(--blue2)}.risk .bi{background:rgba(255,120,135,.1);color:var(--red)}.done .bi{background:rgba(67,214,156,.1);color:var(--green)}.brief-row b{display:block;font-size:14px}.brief-row p{font-size:12px;line-height:1.45;color:var(--muted);margin:3px 0 0}.status{font:700 9px monospace;padding:4px 7px;border-radius:99px;background:rgba(40,142,255,.1);color:var(--blue2);height:max-content}.brief-footer{display:flex;gap:7px;padding:14px 20px;border-top:1px solid var(--line);font-size:11px;color:#68768a}.source{padding:4px 7px;border:1px solid var(--line);border-radius:7px}
+.value-strip{padding:0 0 52px}.values{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:20px;overflow:hidden;background:rgba(10,16,28,.75)}.value{display:grid;grid-template-columns:42px 1fr;gap:14px;padding:25px 27px}.value+.value{border-left:1px solid var(--line)}.value-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(40,142,255,.11);color:var(--blue2)}.value b{display:block}.value span{font-size:13px;color:var(--muted)}
+.head{max-width:800px;margin-bottom:50px}.head h2,.brain-copy h2,.cta h2{font-size:clamp(35px,4.8vw,58px);line-height:1.07;letter-spacing:-.05em;margin:18px 0}.head p,.brain-copy>p{font-size:18px;color:var(--muted);margin:0}.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{padding:29px;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(150deg,rgba(16,29,48,.9),rgba(7,13,23,.82));transition:.2s}.card:hover{transform:translateY(-5px);border-color:var(--line2)}.card-icon{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;background:rgba(40,142,255,.12);color:var(--blue2);font-size:24px}.period{font:650 10px monospace;color:var(--cyan);letter-spacing:.1em;margin:19px 0 8px}.card h3{font-size:22px;margin:0 0 8px}.card p,.level p{font-size:14px;color:var(--muted)}.card ul,.level ul{list-style:none;padding:17px 0 0;margin:18px 0 0;border-top:1px solid var(--line)}.card li,.level li{font-size:13px;color:#c9d4e4;padding:5px 0}.card li:before,.level li:before{content:"✓";color:var(--green);margin-right:8px}
+.band{border-block:1px solid var(--line);background:rgba(3,7,13,.5)}.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:28px;position:relative}.pipeline:before{content:"";position:absolute;top:33px;left:8%;right:8%;height:2px;background:linear-gradient(90deg,var(--red),var(--green),var(--blue),var(--purple));opacity:.62}.node{text-align:center;position:relative}.node-icon{position:relative;z-index:2;width:68px;height:68px;margin:0 auto 18px;border:1px solid var(--line2);border-radius:20px;display:grid;place-items:center;background:var(--card);font-size:22px}.node h3{font-size:16px;margin:0 0 5px}.node p{font-size:13px;color:var(--muted);margin:0}.guarantee{margin-top:42px;padding:20px 24px;border:1px solid rgba(67,214,156,.3);background:rgba(67,214,156,.06);border-radius:16px}.guarantee b{color:var(--green)}
+.level{padding:0;overflow:hidden}.level.featured{border-color:rgba(154,118,255,.58);box-shadow:0 0 45px rgba(154,118,255,.12);position:relative}.level-visual{height:175px;display:grid;place-items:center;border-bottom:1px solid var(--line);background:radial-gradient(circle at 50% 110%,rgba(40,142,255,.25),transparent 62%),#09111e}.level:nth-child(2) .level-visual{background:radial-gradient(circle at 50% 110%,rgba(32,213,231,.2),transparent 62%),#09111e}.level:nth-child(3) .level-visual{background:radial-gradient(circle at 50% 110%,rgba(154,118,255,.27),transparent 62%),#0a101e}.device{width:126px;height:80px;border:1px solid #4d92d8;border-radius:14px;background:#0c1a2d;position:relative;box-shadow:0 18px 45px #0008}.device:before{content:"";position:absolute;left:17px;right:17px;top:20px;height:5px;border-radius:9px;background:linear-gradient(90deg,var(--blue),#288eff22);box-shadow:0 13px 0 #ffffff14,0 26px 0 #ffffff0e}.hybrid-visual{position:relative}.hybrid-visual .device{transform:translateX(-40px)}.cloud{position:absolute;width:58px;height:38px;border-radius:30px;background:#235fa6;right:34px}.cloud:before,.cloud:after{content:"";position:absolute;border-radius:50%;background:inherit}.cloud:before{width:31px;height:31px;left:8px;top:-13px}.cloud:after{width:24px;height:24px;right:5px;top:-8px}.brain-orb{width:94px;height:94px;border-radius:50%;display:grid;place-items:center;text-align:center;border:1px solid #b497ff;background:radial-gradient(circle,#412879,#16162e 68%);box-shadow:0 0 46px #9a76ff55;font:800 12px monospace}.brain-orb:before{content:"";position:absolute;width:142px;height:142px;border:1px dotted #9a76ff88;border-radius:50%}.tag{position:absolute;top:14px;right:14px;font:800 10px monospace;color:#ecdeff;background:#9a76ff2d;border:1px solid #9a76ff66;padding:5px 8px;border-radius:99px}.level-copy{padding:27px}.level-no{font:650 10px monospace;color:#66748a}.level h3{font-size:23px;margin:8px 0 3px}.promise{color:var(--blue2);font-size:13px;font-weight:700}.featured .promise{color:#cbb4ff}
+.validation{display:grid;grid-template-columns:1fr .78fr;gap:24px}.steps{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}.step{display:grid;grid-template-columns:48px 1fr auto;gap:16px;align-items:center;padding:19px 21px;border-bottom:1px solid var(--line)}.step:last-child{border:0}.num{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#288eff1c;color:var(--blue2);font:700 13px monospace}.step b{display:block}.step span{display:block;font-size:13px;color:var(--muted)}.pass{font:650 10px monospace;color:var(--blue2);border:1px solid var(--line2);padding:4px 8px;border-radius:99px}.score-card{padding:33px;border:1px solid var(--line2);border-radius:var(--r);background:radial-gradient(circle at 80% 20%,#288eff2c,transparent 38%),var(--card)}.score{font-size:74px;font-weight:900;letter-spacing:-.07em;color:var(--green);line-height:1}.score-card h3{font-size:25px;margin:14px 0 8px}.score-card p{color:var(--muted)}.loop{margin-top:27px;padding:15px;border:1px dashed var(--line2);border-radius:14px;font-size:14px}.loop b{color:var(--amber)}
+.brain{border:1px solid #9a76ff55;border-radius:30px;overflow:hidden;background:radial-gradient(circle at 78% 48%,#9a76ff2c,transparent 35%),linear-gradient(145deg,#0d1425,#070c15)}.brain-grid{display:grid;grid-template-columns:1.05fr .95fr;min-height:530px}.brain-copy{padding:55px}.benefits{display:grid;gap:10px;margin-top:26px}.benefit{display:grid;grid-template-columns:32px 1fr;gap:11px;padding:12px;border:1px solid #9a76ff2b;border-radius:13px;background:#9a76ff0b}.benefit i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#9a76ff24;color:#cbb4ff;font-style:normal}.benefit b{display:block;font-size:14px}.benefit span{display:block;font-size:12px;color:var(--muted)}.graph{position:relative;min-height:490px}.g{position:absolute;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;text-align:center;font:600 10px monospace;color:#dccdff;background:#151a35;border:1px solid #9a76ff88}.g.main{width:112px;height:112px;left:39%;top:38%;font-size:13px;background:#342464}.g1{left:8%;top:18%}.g2{right:10%;top:14%}.g3{left:9%;bottom:13%}.g4{right:8%;bottom:12%}.g5{left:43%;top:5%}.g6{left:44%;bottom:4%}.graph svg{position:absolute;inset:0;width:100%;height:100%}.graph line{stroke:#9a76ff66;stroke-dasharray:5 7}
+.skills{display:grid;grid-template-columns:.8fr 1.2fr;gap:34px}.skills .head{position:sticky;top:105px}.skill-groups{display:grid;gap:16px}.skill-group{padding:26px;border:1px solid var(--line);border-radius:20px;background:#0d1625ba}.group-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.group-head h3{margin:0}.group-head span{font:650 10px monospace;color:var(--green);border:1px solid #43d69c55;border-radius:99px;padding:5px 8px}.skill-list{display:flex;flex-wrap:wrap;gap:8px}.skill{padding:8px 11px;border:1px solid var(--line);border-radius:10px;color:#c8d3e3;font-size:13px}.skill i{font-style:normal;color:var(--blue2);margin-right:6px}.library-note{font-size:14px;color:var(--muted);margin:16px 0 0;padding-top:15px;border-top:1px solid var(--line)}
+.cta-box{border:1px solid var(--line2);border-radius:30px;background:radial-gradient(circle at 18% 18%,#288eff38,transparent 32%),linear-gradient(140deg,#0d1a2e,#070d17);padding:60px}.cta-grid{display:grid;grid-template-columns:1fr .9fr;gap:56px;align-items:center}.checks{list-style:none;padding:0;display:grid;gap:9px}.checks li:before{content:"✓";color:var(--green);margin-right:9px}.lead{padding:27px;border:1px solid var(--line);border-radius:19px;background:#050910bd}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:12px;color:var(--muted)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line2);background:#07101d;color:#fff;border-radius:12px;padding:12px 13px;outline:0}.field textarea{min-height:75px}.lead .btn{width:100%}.note{font-size:11px;color:#68768a;text-align:center}.note a{color:var(--blue2)}footer{padding:40px 0;border-top:1px solid var(--line);margin-top:90px}.foot{display:flex;justify-content:space-between;gap:24px;align-items:center}.foot p{font-size:13px;color:var(--muted)}.reveal{opacity:0;transform:translateY(22px);transition:.65s}.reveal.in{opacity:1;transform:none}
+@media(max-width:920px){.links{display:none}.links.open{display:flex;position:absolute;top:60px;left:15px;right:15px;flex-direction:column;background:#080d17;padding:12px;border:1px solid var(--line);border-radius:15px}.links.open a{padding:12px}.burger{display:block}.hero-grid,.validation,.brain-grid,.skills,.cta-grid{grid-template-columns:1fr}.cards3{grid-template-columns:1fr}.values{grid-template-columns:1fr}.value+.value{border-left:0;border-top:1px solid var(--line)}.pipeline{grid-template-columns:1fr}.pipeline:before{display:none}.node{text-align:left;display:grid;grid-template-columns:68px 1fr;gap:16px;align-items:center}.node-icon{margin:0}.skills .head{position:static}}
+@media(max-width:580px){.wrap{width:calc(100% - 28px)}section{padding:74px 0}.hero{padding-top:110px;min-height:auto}.hero-grid{gap:28px}h1{font-size:47px}.hero-actions .btn{width:100%}.trust{display:grid}.product{min-height:390px}.product:before{display:none}.brief{transform:none}.brief-row{grid-template-columns:34px 1fr}.status{display:none}.level-visual{height:160px}.step{grid-template-columns:40px 1fr}.pass{display:none}.brain-copy{padding:27px}.graph{min-height:360px;transform:scale(.9)}.g{width:62px;height:62px}.g.main{width:95px;height:95px}.cta-box{padding:27px 20px}.foot{display:block}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 
-/* ===== background glows ===== */
-.bg-deco{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.bg-deco::before{
-  content:"";position:absolute;top:-200px;right:-150px;width:700px;height:700px;
-  background:radial-gradient(circle,rgba(47,123,255,0.22),transparent 60%);
-  filter:blur(20px);
-}
-.bg-deco::after{
-  content:"";position:absolute;bottom:-300px;left:-200px;width:800px;height:800px;
-  background:radial-gradient(circle,rgba(47,123,255,0.10),transparent 60%);
-  filter:blur(20px);
-}
-.grid-deco{
-  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.5;
-  background-image:linear-gradient(rgba(86,120,200,0.06) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(86,120,200,0.06) 1px,transparent 1px);
-  background-size:54px 54px;
-  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
-}
+/* privacy story */
+.privacy-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;gap:10px;align-items:stretch}.pstep{position:relative;padding:23px 16px 20px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(155deg,rgba(16,29,48,.9),rgba(7,13,23,.82));text-align:center;min-width:0}.pstep:hover{border-color:var(--line2);transform:translateY(-4px);transition:.2s}.zone{display:inline-block;font:700 9px monospace;letter-spacing:.08em;color:var(--green);background:rgba(67,214,156,.08);border:1px solid rgba(67,214,156,.2);border-radius:99px;padding:4px 7px}.zone.outside{color:var(--blue2);background:rgba(40,142,255,.08);border-color:var(--line2)}.picon{width:82px;height:82px;margin:18px auto 16px;border-radius:24px;display:grid;place-items:center;background:radial-gradient(circle at 40% 30%,rgba(40,142,255,.25),rgba(9,20,36,.95));border:1px solid rgba(80,166,255,.35);box-shadow:0 14px 35px rgba(0,0,0,.3),inset 0 0 24px rgba(40,142,255,.08)}.picon svg{width:58px;height:58px;stroke:var(--blue2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.protect{background:radial-gradient(circle at 40% 30%,rgba(32,213,231,.22),rgba(9,25,36,.95));border-color:rgba(32,213,231,.4)}.protect svg{stroke:var(--cyan)}.mask svg{stroke:var(--green)}.cloud-ai svg{stroke:#a68aff}.answer svg{stroke:var(--green)}.pstep h3{font-size:16px;line-height:1.25;margin:0 0 8px}.pstep p{font-size:12px;line-height:1.5;color:var(--muted);margin:0}.pipe-arrow{align-self:center;color:var(--cyan);font-size:25px;text-shadow:0 0 14px rgba(32,213,231,.6);animation:flowPulse 1.8s ease-in-out infinite}@keyframes flowPulse{50%{transform:translateX(3px);opacity:.45}}
+/* effect + comparison */
+.effect-grid{display:grid;grid-template-columns:1.15fr .85fr .95fr;gap:14px;margin-bottom:8px}.effect-main,.effect-team,.effect-use{padding:27px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(150deg,rgba(16,29,48,.9),rgba(7,13,23,.82))}.effect-main{background:radial-gradient(circle at 85% 20%,rgba(67,214,156,.15),transparent 38%),var(--card)}.effect-label{font:700 10px monospace;letter-spacing:.1em;color:var(--green)}.effect-main strong{display:block;font-size:62px;line-height:1;letter-spacing:-.06em;color:var(--green);margin:13px 0 4px}.effect-main b{font-size:18px}.effect-main p,.effect-team p{font-size:13px;color:var(--muted);margin:10px 0 0}.effect-team{display:flex;flex-direction:column;justify-content:center}.effect-team span,.effect-use>span{color:var(--muted);font-size:13px}.effect-team strong{font-size:30px;line-height:1.1;color:var(--blue2);margin:8px 0}.effect-use ul{list-style:none;padding:8px 0 0;margin:0}.effect-use li{font-size:13px;padding:5px 0}.effect-use li:before{content:"→";color:var(--cyan);margin-right:8px}.effect-note,.compare-note{font-size:11px;color:#69778b;margin:10px 0 28px}.compare-wrap{overflow:auto;border:1px solid var(--line);border-radius:20px;background:rgba(9,15,26,.75)}.compare-wrap table{width:100%;min-width:850px;border-collapse:collapse}.compare-wrap th,.compare-wrap td{padding:16px 18px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.compare-wrap th{color:var(--muted);background:#0a111e}.compare-wrap tr:last-child td{border-bottom:0}.compare-wrap tbody tr:hover{background:rgba(255,255,255,.025)}.compare-wrap .jcol{background:rgba(40,142,255,.065);color:#ddebff}.compare-wrap .yes{color:var(--green);font-weight:800}.compare-wrap .mid{color:var(--amber);font-weight:800}.compare-wrap .no{color:var(--red);font-weight:800}
+@media(max-width:1000px){.privacy-flow{grid-template-columns:1fr}.pipe-arrow{transform:rotate(90deg);justify-self:center;margin:-4px 0}.effect-grid{grid-template-columns:1fr}.pstep{display:grid;grid-template-columns:90px 1fr;text-align:left;gap:0 15px;align-items:center}.pstep .zone{position:absolute;right:15px;top:15px}.picon{grid-row:1/3;margin:4px}.pstep h3{align-self:end;padding-right:95px}.pstep p{align-self:start}.pipe-arrow{animation:none}}
+@media(max-width:580px){.pstep{display:block;text-align:center}.pstep .zone{position:static}.pstep h3{padding:0}.picon{margin:15px auto}.effect-main strong{font-size:52px}}
+</style></head><body>
+<header class="topbar" id="topbar"><div class="wrap nav"><a class="brand" href="#top"><svg class="logo" viewBox="0 0 48 48"><defs><linearGradient id="a" x1="5" y1="7" x2="42" y2="41"><stop stop-color="#1be0ef"/><stop offset=".52" stop-color="#2797ff"/><stop offset="1" stop-color="#715eff"/></linearGradient></defs><path d="M24 3 43 14v21L24 46 5 35V14Z" fill="#071324" stroke="url(#a)" stroke-width="2"/><path d="m24 3 19 11-9 5-10-6-10 6-9-5Z" fill="url(#a)"/><path d="M43 14v21L24 46V35l10-6V19Z" fill="#297df4"/><path d="M5 14v21l19 11V35l-10-6V19Z" fill="#1ccbdc"/><path d="m14 19 10-6 10 6v10l-10 6-10-6Z" fill="#0b1b30"/></svg><span>JARVICE</span></a><nav class="links" id="links"><a href="#result">Результат</a><a href="#privacy">Приватность</a><a href="#levels">Подключение</a><a href="#brain">The Brain</a><a href="#compare">Сравнение</a><a href="#skills">Навыки</a><a class="nav-cta" href="#pilot">Запросить пилот</a></nav><button class="burger" id="burger">☰</button></div></header>
+<main>
+<section class="hero" id="top"><div class="wrap hero-grid"><div><div class="eyebrow"><i></i> AI-помощник руководителя</div><h1>Главное о бизнесе — <span>до того, как вы открыли почту</span></h1><p class="lede">Jarvice собирает сигналы из рабочих систем, готовит управленческую сводку, показывает риски и помогает принять решение с полным контекстом компании.</p><div class="hero-actions"><a class="btn btn-primary" href="#pilot">Показать на моих данных →</a><a class="btn btn-ghost" href="#result">Что получает руководитель</a></div><div class="trust"><span>Экономит часы на поиске контекста</span><span>Не теряет историю решений</span><span>Защищает чувствительные данные</span></div></div>
+<div class="product"><div class="brief"><div class="brief-head"><div class="brief-title"><svg class="mini" viewBox="0 0 48 48"><path d="M24 3 43 14v21L24 46 5 35V14Z" fill="#09172a" stroke="#36a2ff" stroke-width="2"/><path d="m24 3 19 11-9 5-10-6-10 6-9-5Z" fill="#20d5e7"/><path d="M43 14v21L24 46V35l10-6V19Z" fill="#258bff"/><path d="M5 14v21l19 11V35l-10-6V19Z" fill="#19bacd"/></svg><div><b>Утренняя сводка</b><span>Пятница, 19 июня</span></div></div><div class="brief-time">09:00 · 4 мин</div></div><div class="brief-body"><div class="brief-row risk"><div class="bi">!</div><div><b>Риск по ключевому проекту</b><p>Срок интеграции сместился. Нужна развилка по ресурсам до 13:00.</p></div><span class="status">РЕШИТЬ</span></div><div class="brief-row"><div class="bi">→</div><div><b>Три решения ждут подтверждения</b><p>Собраны позиции участников и предложен следующий шаг.</p></div><span class="status">СМОТРЕТЬ</span></div><div class="brief-row done"><div class="bi">✓</div><div><b>Коммерческий блок</b><p>Новый запрос квалифицирован. Контекст для ответа готов.</p></div><span class="status">ГОТОВО</span></div><div class="brief-row"><div class="bi">⌁</div><div><b>Что изменилось со вчера</b><p>Короткая выжимка по людям, задачам и документам.</p></div><span class="status">СВОДКА</span></div></div><div class="brief-footer"><span>Источники:</span><span class="source">Почта</span><span class="source">Чаты</span><span class="source">Документы</span></div></div></div></div></section>
+<section class="value-strip"><div class="wrap values reveal"><div class="value"><div class="value-icon">◎</div><div><b>Видит главное</b><span>Факты, риски и решения в одной короткой сводке.</span></div></div><div class="value"><div class="value-icon">◇</div><div><b>Помнит контекст</b><span>Не начинает каждый диалог с чистого листа.</span></div></div><div class="value"><div class="value-icon">⌾</div><div><b>Работает проактивно</b><span>Сам запускает сценарии и приносит результат.</span></div></div></div></section>
+<section id="result"><div class="wrap"><div class="head reveal"><div class="eyebrow">Живая управленческая память</div><h2>День, неделя, квартал — <span class="blue">без ручной сборки контекста</span></h2><p>Jarvice превращает разрозненные сообщения и документы в регулярную картину бизнеса.</p></div><div class="cards3"><article class="card reveal"><div class="card-icon">▦</div><div class="period">КАЖДЫЙ ДЕНЬ</div><h3>Расписание и приоритеты</h3><p>Что сегодня произойдёт, где нужна подготовка и что нельзя пропустить.</p><ul><li>Фокус встреч</li><li>Риски и дедлайны</li><li>Незакрытые вопросы</li></ul></article><article class="card reveal"><div class="card-icon">↗</div><div class="period">КАЖДУЮ НЕДЕЛЮ</div><h3>Паттерны и выводы</h3><p>Повторяющиеся темы, ключевые решения и уроки недели.</p><ul><li>Что изменилось</li><li>Где буксует работа</li><li>Что требует решения</li></ul></article><article class="card reveal"><div class="card-icon">◉</div><div class="period">КАЖДЫЙ КВАРТАЛ</div><h3>Управленческий дамп</h3><p>Цельная память периода: результаты, решения, проблемы и паттерны.</p><ul><li>Стратегические результаты</li><li>Уроки и риски</li><li>Контекст планирования</li></ul></article></div></div></section>
+<section class="band" id="privacy"><div class="wrap">
+<div class="head reveal"><div class="eyebrow">Privacy by design</div><h2>В AI уходит смысл, <span class="blue">но не персональные данные</span></h2><p>Защита работает в два слоя: программные правила находят формальные признаки, а локальная LLM понимает контекст и ловит то, что нельзя описать одним шаблоном.</p></div>
+<div class="privacy-flow">
+<article class="pstep reveal"><div class="zone">ВАШ КОНТУР</div><div class="picon original"><svg viewBox="0 0 64 64" fill="none"><rect x="10" y="13" width="34" height="40" rx="6"/><path d="M16 23h21M16 31h16M16 39h18"/><rect x="34" y="28" width="20" height="17" rx="4"/><path d="m36 32 8 6 8-6"/></svg></div><h3>Рабочие источники</h3><p>Почта, чаты, документы и календарь остаются внутри защищённого узла.</p></article>
+<div class="pipe-arrow">→</div>
+<article class="pstep reveal"><div class="zone">ДВОЙНАЯ ЗАЩИТА</div><div class="picon protect"><svg viewBox="0 0 64 64" fill="none"><path d="M18 18 9 32l9 14M46 18l9 14-9 14"/><path d="m37 14-10 36"/><path d="M32 20 45 25v10c0 9-13 14-13 14S19 44 19 35V25Z"/><path d="m26 34 4 4 8-9"/></svg></div><h3>Код + локальная LLM</h3><p>Скрипты находят email, телефоны, суммы и даты. Локальная модель усиливает код и распознаёт чувствительный смысл по контексту.</p></article>
+<div class="pipe-arrow">→</div>
+<article class="pstep reveal"><div class="zone">БЕЗОПАСНЫЙ ТЕКСТ</div><div class="picon mask"><svg viewBox="0 0 64 64" fill="none"><path d="M17 8h23l9 9v39H17Z"/><path d="M40 8v10h9"/><rect x="23" y="27" width="20" height="6" rx="3"/><rect x="23" y="38" width="15" height="6" rx="3"/><path d="M26 30h2M31 30h2M36 30h2"/></svg></div><h3>Контекст без ПДн</h3><p>Имена, контакты и реквизиты заменены устойчивыми масками. Смысл и связи сохранены.</p></article>
+<div class="pipe-arrow">→</div>
+<article class="pstep reveal"><div class="zone outside">ВНЕШНИЙ AI</div><div class="picon cloud-ai"><svg viewBox="0 0 64 64" fill="none"><path d="M18 48h30a10 10 0 0 0 1-20 17 17 0 0 0-32-3A12 12 0 0 0 18 48Z"/><path d="M24 35c5-6 11-6 16 0-5 6-11 6-16 0Z"/><path d="m22 23 22 24"/></svg></div><h3>AI видит только смысл</h3><p>Внешняя модель получает обезличенный контекст — без оригинальных ФИО, контактов и доступов.</p></article>
+<div class="pipe-arrow">→</div>
+<article class="pstep reveal"><div class="zone">СНОВА ЛОКАЛЬНО</div><div class="picon answer"><svg viewBox="0 0 64 64" fill="none"><path d="M10 12h44v33H30L18 54v-9h-8Z"/><circle cx="43" cy="39" r="11"/><path d="m38 39 4 4 7-8"/></svg></div><h3>Готовый результат</h3><p>Маски восстанавливаются внутри узла. Пользователь получает нормальный, проверенный ответ.</p></article>
+</div>
+<div class="guarantee reveal"><b>Private-режим:</b> вся обработка, включая AI, выполняется локально — данные вообще не покидают вашу инфраструктуру.</div>
+</div></section>
+<section id="levels"><div class="wrap"><div class="head reveal"><div class="eyebrow">Варианты подключения</div><h2>От локальной приватности — <span class="blue">до полной корпоративной памяти</span></h2><p>Архитектура под требования к безопасности и глубину контекста бизнеса.</p></div><div class="cards3"><article class="card level reveal"><div class="level-visual"><div class="device"></div></div><div class="level-copy"><div class="level-no">01 · PRIVATE</div><h3>Локальный</h3><div class="promise">Максимальный контроль</div><p>Данные и AI полностью остаются внутри вашей инфраструктуры.</p><ul><li>Локальная обработка</li><li>Изолированный контур</li><li>Полный контроль данных</li></ul></div></article><article class="card level reveal"><div class="level-visual hybrid-visual"><div class="device"></div><div class="cloud"></div></div><div class="level-copy"><div class="level-no">02 · ENHANCED</div><h3>Гибридный</h3><div class="promise">Больше возможностей AI</div><p>Локальная защита данных сочетается с качеством облачных моделей.</p><ul><li>Локальное обезличивание</li><li>Усиленная обработка</li><li>Баланс качества и приватности</li></ul></div></article><article class="card level featured reveal"><div class="tag">РЕКОМЕНДУЕМ</div><div class="level-visual"><div class="brain-orb">THE<br>BRAIN</div></div><div class="level-copy"><div class="level-no">03 · KNOWLEDGE</div><h3>С корпоративной памятью</h3><div class="promise">Максимум пользы</div><p>Текущая ситуация связывается со знаниями, решениями и историей компании.</p><ul><li>Возможности гибридного режима</li><li>Модуль The Brain</li><li>Полный бизнес-контекст</li></ul></div></article></div></div></section>
+<section class="band" id="accuracy"><div class="wrap"><div class="head reveal"><div class="eyebrow">Контроль качества</div><h2>Несколько проходов, <span class="blue">прежде чем ответ увидите вы</span></h2><p>Несколько моделей в лучшем сочетании последовательно генерируют, сверяют и исправляют результат.</p></div><div class="validation"><div class="steps reveal"><div class="step"><div class="num">01</div><div><b>Формирование ответа</b><span>Сбор фактов и структуры.</span></div><div class="pass">ПРОХОД 1</div></div><div class="step"><div class="num">02</div><div><b>Независимая проверка</b><span>Сверка вывода с контекстом.</span></div><div class="pass">ПРОХОД 2</div></div><div class="step"><div class="num">03</div><div><b>Исправление</b><span>Расхождения возвращаются на доработку.</span></div><div class="pass">ЦИКЛ</div></div><div class="step"><div class="num">04</div><div><b>Проверка согласованности</b><span>Исключение противоречий.</span></div><div class="pass">ПРОХОД 3</div></div><div class="step"><div class="num">05</div><div><b>Готовый ответ</b><span>Результат проходит установленный порог.</span></div><div class="pass">OUTPUT</div></div></div><aside class="score-card reveal"><div class="score">≥95%</div><h3>Целевая точность</h3><p>Порог относится к итоговому результату после полного цикла.</p><div class="loop"><b>Недостаточно точно?</b><br>Jarvice исправляет ответ и проверяет его снова.</div></aside></div></div></section>
+<section id="brain"><div class="wrap brain reveal"><div class="brain-grid"><div class="brain-copy"><div class="eyebrow">Модуль The Brain</div><h2>Память компании, которая работает</h2><p>The Brain превращает документы, встречи и решения в связанную систему знаний. Jarvice получает не поиск по файлам, а понимание бизнеса.</p><div class="benefits"><div class="benefit"><i>1</i><div><b>Не теряет историю решений</b><span>Сохраняет причины, участников и последствия.</span></div></div><div class="benefit"><i>2</i><div><b>Находит связи</b><span>Объединяет людей, продукты, проблемы и встречи.</span></div></div><div class="benefit"><i>3</i><div><b>Снижает риск выдумок</b><span>Выводы опираются на проверенное знание.</span></div></div><div class="benefit"><i>4</i><div><b>Становится ценнее</b><span>Новый опыт усиливает будущие ответы.</span></div></div></div></div><div class="graph"><svg><line x1="48%" y1="50%" x2="17%" y2="26%"/><line x1="48%" y1="50%" x2="83%" y2="23%"/><line x1="48%" y1="50%" x2="18%" y2="80%"/><line x1="48%" y1="50%" x2="84%" y2="80%"/><line x1="48%" y1="50%" x2="50%" y2="12%"/><line x1="48%" y1="50%" x2="51%" y2="92%"/></svg><div class="g main">THE<br>BRAIN</div><div class="g g1">ЛЮДИ</div><div class="g g2">РЕШЕНИЯ</div><div class="g g3">ПРОБЛЕМЫ</div><div class="g g4">ИНСАЙТЫ</div><div class="g g5">ПРОДУКТЫ</div><div class="g g6">ВСТРЕЧИ</div></div></div></div></section>
+<section id="compare"><div class="wrap">
+<div class="head reveal"><div class="eyebrow">Почему не просто ChatGPT или Copilot</div><h2>Jarvice не ждёт вопроса. <span class="blue">Он ведёт управленческий контекст</span></h2><p>ChatGPT — сильная модель. Copilot — сильная экосистема. Jarvice закрывает разрыв между AI, реальным корпоративным контекстом и требованиями к безопасности.</p></div>
+<div class="effect-grid reveal">
+<div class="effect-main"><span class="effect-label">ПОТЕНЦИАЛ ЭКОНОМИИ</span><strong>20–40</strong><b>часов в месяц на одного руководителя</b><p>Если сегодня на поиск контекста, разбор переписки и подготовку сводок уходит 1–2 часа в рабочий день.</p></div>
+<div class="effect-team"><span>Команда из 10 руководителей</span><strong>200–400 часов</strong><p>потенциально высвобожденного времени ежемесячно</p></div>
+<div class="effect-use"><span>Это время возвращается в</span><ul><li>решения и работу с командой</li><li>клиентов и развитие продукта</li><li>стратегию вместо поиска информации</li></ul></div>
+</div>
+<p class="effect-note">Расчёт иллюстративный: 20 рабочих дней × 1–2 часа. Фактический эффект зависит от процессов и глубины подключения.</p>
+<div class="compare-wrap reveal"><table><thead><tr><th>Возможность</th><th class="jcol">Jarvice</th><th>ChatGPT</th><th>Copilot</th></tr></thead><tbody>
+<tr><td>Работа с корпоративным контекстом</td><td class="jcol"><b class="yes">✓</b> Почта, чаты, документы, сценарии компании</td><td><b class="mid">○</b> Нужно вручную приносить контекст</td><td><b class="yes">✓</b> Хорошо внутри M365</td></tr>
+<tr><td>Защита персональных данных</td><td class="jcol"><b class="yes">✓</b> Обезличивание до отправки в AI</td><td><b class="mid">○</b> Зависит от ручной подготовки</td><td><b class="mid">○</b> Данные работают внутри облачного контура</td></tr>
+<tr><td>Локальный режим</td><td class="jcol"><b class="yes">✓</b> Есть</td><td><b class="no">×</b> Нет</td><td><b class="no">×</b> Нет</td></tr>
+<tr><td>Облачный режим</td><td class="jcol"><b class="yes">✓</b> Только обезличенные данные</td><td><b class="mid">○</b> Полный текст, если отправить вручную</td><td><b class="mid">○</b> Облачная обработка M365</td></tr>
+<tr><td>Контроль логики обработки</td><td class="jcol"><b class="yes">✓</b> Код и сценарии можно адаптировать</td><td><b class="mid">○</b> Ограниченный контроль</td><td><b class="mid">○</b> Ограничен возможностями платформы</td></tr>
+<tr><td>Telegram / внешний канал доставки</td><td class="jcol"><b class="yes">✓</b> Есть</td><td><b class="no">×</b> Нет как готовый сценарий</td><td><b class="no">×</b> Нет как нативный сценарий</td></tr>
 
-/* ===== header ===== */
-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
-  background:rgba(7,11,22,0.72);border-bottom:1px solid var(--border)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
-.logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:19px;letter-spacing:.2px}
-.logo .mark{
-  width:34px;height:34px;border-radius:9px;border:1.5px solid var(--border-strong);
-  display:grid;place-items:center;font-weight:800;color:var(--accent-2);
-  background:linear-gradient(160deg,rgba(47,123,255,0.18),rgba(47,123,255,0.02));
-  box-shadow:0 0 22px rgba(47,123,255,0.25) inset;
-}
-.nav-links{display:flex;gap:30px;align-items:center}
-.nav-links a{color:var(--muted);font-size:14.5px;transition:color .2s}
-.nav-links a:hover{color:var(--text)}
-.nav-cta{padding:9px 18px;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;
-  box-shadow:0 6px 22px var(--accent-glow);transition:transform .15s,box-shadow .2s}
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 10px 30px var(--accent-glow)}
-.burger{display:none;background:none;border:none;color:var(--text);font-size:24px;cursor:pointer}
+</tbody></table></div>
 
-/* ===== sections ===== */
-section{position:relative;z-index:1;padding:96px 0}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:.6px;
-  text-transform:uppercase;color:var(--accent-2);
-  border:1px solid var(--border-strong);border-radius:999px;padding:6px 14px;
-  background:rgba(47,123,255,0.08)}
-h1{font-size:clamp(40px,6.5vw,76px);line-height:1.02;font-weight:800;letter-spacing:-1.5px}
-h2{font-size:clamp(28px,4vw,44px);line-height:1.1;font-weight:800;letter-spacing:-1px}
-.section-head{max-width:720px;margin-bottom:54px}
-.section-head h2{margin:18px 0 14px}
-.section-head p{color:var(--muted);font-size:18px}
-
-/* ===== hero ===== */
-.hero{padding-top:70px;padding-bottom:60px}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}
-.hero h1{margin:22px 0 22px}
-.hero .lede{font-size:20px;color:var(--muted);max-width:560px}
-.hero .sub{font-size:16px;color:var(--muted-2);max-width:540px;margin-top:18px}
-.hero-actions{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:9px;padding:15px 26px;border-radius:12px;font-weight:600;font-size:16px;
-  cursor:pointer;border:none;transition:transform .15s,box-shadow .2s,background .2s}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 10px 34px var(--accent-glow)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 42px var(--accent-glow)}
-.btn-ghost{background:rgba(255,255,255,0.04);color:var(--text);border:1px solid var(--border-strong)}
-.btn-ghost:hover{background:rgba(255,255,255,0.08)}
-.hero-badges{display:flex;gap:18px;margin-top:30px;flex-wrap:wrap}
-.hero-badge{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
-.hero-badge svg{flex-shrink:0}
-
-/* hero visual */
-.hero-visual{position:relative;display:grid;place-items:center;min-height:380px}
-.orb{width:230px;height:230px;border-radius:30px;position:relative;
-  background:linear-gradient(155deg,#143a8a,#0c1f4d);
-  border:1px solid var(--border-strong);
-  display:grid;place-items:center;
-  box-shadow:0 30px 90px rgba(20,58,138,0.55),0 0 0 12px rgba(47,123,255,0.05);
-  animation:float 6s ease-in-out infinite}
-.orb .big-j{font-size:120px;font-weight:800;color:#fff;text-shadow:0 0 40px rgba(79,156,255,0.8)}
-.ring{position:absolute;border:1px solid var(--border);border-radius:50%;animation:spin 24s linear infinite}
-.ring.r1{width:330px;height:330px}
-.ring.r2{width:430px;height:430px;animation-duration:38s;animation-direction:reverse;border-style:dashed;border-color:rgba(86,120,200,0.14)}
-.chip{position:absolute;background:var(--panel-solid);border:1px solid var(--border-strong);
-  border-radius:11px;padding:9px 13px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.45);backdrop-filter:blur(6px)}
-.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
-.chip.c1{top:14px;left:-6px;animation:float 5s ease-in-out infinite}
-.chip.c2{bottom:54px;right:-14px;animation:float 5.6s ease-in-out infinite .6s}
-.chip.c3{bottom:6px;left:34px;animation:float 6.2s ease-in-out infinite 1.1s}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ===== stat bar ===== */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:10px}
-.stat{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:26px 22px;
-  backdrop-filter:blur(8px)}
-.stat .num{font-size:36px;font-weight:800;color:var(--accent-2);letter-spacing:-1px}
-.stat .lab{font-size:14.5px;color:var(--muted);margin-top:6px}
-
-/* ===== problem/solution ===== */
-.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-.ps-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:30px;backdrop-filter:blur(8px)}
-.ps-card h3{display:flex;align-items:center;gap:11px;font-size:20px;margin-bottom:22px}
-.tag{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:5px 11px;border-radius:8px}
-.tag.bad{background:rgba(248,113,113,0.14);color:var(--red)}
-.tag.good{background:rgba(52,211,153,0.14);color:var(--green)}
-.ps-list{list-style:none;display:flex;flex-direction:column;gap:16px}
-.ps-list li{display:flex;gap:13px;font-size:15.5px;color:var(--muted)}
-.ps-list li b{color:var(--text);font-weight:600}
-.ico{flex-shrink:0;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;margin-top:1px}
-.ico.bad{background:rgba(248,113,113,0.13);color:var(--red)}
-.ico.good{background:rgba(52,211,153,0.13);color:var(--green)}
-
-/* ===== flow / pipeline ===== */
-.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;justify-content:center;margin-bottom:46px}
-.flow-step{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 22px;min-width:170px;
-  text-align:center;backdrop-filter:blur(8px)}
-.flow-step .fi{width:46px;height:46px;margin:0 auto 12px;border-radius:12px;display:grid;place-items:center;
-  background:rgba(47,123,255,0.12);color:var(--accent-2)}
-.flow-step h4{font-size:16px;margin-bottom:4px}
-.flow-step p{font-size:13px;color:var(--muted-2)}
-.flow-arrow{display:grid;place-items:center;color:var(--accent);font-size:24px;padding:0 6px}
-
-.pipeline{background:var(--panel);border:1px solid var(--border-strong);border-radius:var(--radius);padding:36px;
-  backdrop-filter:blur(8px);position:relative;overflow:hidden}
-.pipeline::before{content:"";position:absolute;top:-60px;right:-60px;width:260px;height:260px;
-  background:radial-gradient(circle,rgba(47,123,255,0.2),transparent 65%)}
-.pipe-head{display:flex;align-items:center;gap:14px;margin-bottom:26px;position:relative}
-.pipe-badge{font-size:34px;font-weight:800;color:var(--green);letter-spacing:-1px;
-  display:flex;align-items:baseline;gap:6px}
-.pipe-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;position:relative}
-.role{background:var(--bg-2);border:1px solid var(--border);border-radius:13px;padding:22px}
-.role .rn{font-size:12px;font-weight:700;color:var(--accent-2);text-transform:uppercase;letter-spacing:.6px}
-.role h4{font-size:17px;margin:10px 0 8px}
-.role p{font-size:14px;color:var(--muted)}
-
-/* ===== modes ===== */
-.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.mode{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:28px;backdrop-filter:blur(8px);
-  transition:transform .2s,border-color .2s}
-.mode:hover{transform:translateY(-4px);border-color:var(--border-strong)}
-.mode .mi{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;margin-bottom:18px;
-  background:rgba(47,123,255,0.12);color:var(--accent-2)}
-.mode h3{font-size:20px;margin-bottom:6px}
-.mode .mtag{font-size:12.5px;font-weight:600;color:var(--accent-2);margin-bottom:12px}
-.mode p{font-size:15px;color:var(--muted)}
-
-/* ===== comparison table ===== */
-.cmp{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel);backdrop-filter:blur(8px)}
-table{width:100%;border-collapse:collapse;min-width:640px}
-th,td{padding:17px 20px;text-align:left;border-bottom:1px solid var(--border);font-size:15px}
-thead th{font-size:14px;color:var(--muted);font-weight:600;background:rgba(255,255,255,0.02)}
-thead th.jcol{color:var(--accent-2)}
-tbody tr:last-child td{border-bottom:none}
-td.feat{color:var(--text);font-weight:500}
-td.cell{text-align:center}
-.yes{color:var(--green);font-weight:700}
-.no{color:var(--red);font-weight:700}
-.part{color:#f5c451;font-weight:700}
-.jcol{background:rgba(47,123,255,0.05)}
-
-/* ===== roadmap ===== */
-.road{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
-.road-step{position:relative;padding:0 22px}
-.road-step:not(:last-child)::after{content:"";position:absolute;top:23px;right:-0px;width:100%;height:2px;
-  background:linear-gradient(90deg,var(--accent),transparent);transform:translateX(50%)}
-.road-num{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:800;
-  background:var(--accent);color:#fff;position:relative;z-index:2;box-shadow:0 0 0 6px rgba(47,123,255,0.12)}
-.road-step h4{font-size:17px;margin:18px 0 8px}
-.road-step p{font-size:14px;color:var(--muted)}
-
-/* ===== CTA / form ===== */
-.cta-wrap{background:linear-gradient(160deg,rgba(20,40,90,0.7),rgba(10,16,32,0.7));
-  border:1px solid var(--border-strong);border-radius:26px;padding:56px;backdrop-filter:blur(10px);position:relative;overflow:hidden}
-.cta-wrap::before{content:"";position:absolute;top:-100px;left:-60px;width:360px;height:360px;
-  background:radial-gradient(circle,rgba(47,123,255,0.25),transparent 65%)}
-.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;position:relative}
-.cta-grid h2{margin-bottom:16px}
-.cta-grid .muted{font-size:17px;margin-bottom:24px}
-.cta-list{list-style:none;display:flex;flex-direction:column;gap:12px}
-.cta-list li{display:flex;gap:10px;align-items:center;font-size:15px;color:var(--text)}
-.cta-list li svg{color:var(--green);flex-shrink:0}
-form{display:flex;flex-direction:column;gap:14px;background:var(--bg-2);border:1px solid var(--border);
-  border-radius:18px;padding:28px}
-form label{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:-7px}
-form input,form textarea{background:var(--bg);border:1px solid var(--border-strong);border-radius:11px;
-  padding:13px 15px;color:var(--text);font-size:15px;font-family:inherit;transition:border-color .2s}
-form input:focus,form textarea:focus{outline:none;border-color:var(--accent)}
-form textarea{resize:vertical;min-height:78px}
-form .btn-primary{justify-content:center;margin-top:6px}
-.form-alt{text-align:center;font-size:14px;color:var(--muted-2);margin-top:4px}
-.form-alt a{color:var(--accent-2);font-weight:600}
-.form-ok{display:none;text-align:center;padding:20px;color:var(--green);font-weight:600}
-
-/* ===== footer ===== */
-footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
-.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;color:var(--muted-2);font-size:14px}
-.foot .logo{font-size:17px;color:var(--text)}
-
-/* ===== reveal animation ===== */
-.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
-.reveal.in{opacity:1;transform:none}
-
-/* ===== responsive ===== */
-@media(max-width:900px){
-  .hero-grid{grid-template-columns:1fr;gap:30px}
-  .hero-visual{order:-1;min-height:300px}
-  .orb{width:180px;height:180px}.orb .big-j{font-size:92px}
-  .ring.r1{width:260px;height:260px}.ring.r2{width:330px;height:330px}
-  .ps-grid,.cta-grid,.pipe-roles{grid-template-columns:1fr}
-  .modes{grid-template-columns:1fr}
-  .stats{grid-template-columns:1fr 1fr}
-  .road{grid-template-columns:1fr 1fr;gap:34px 0}
-  .road-step:not(:last-child)::after{display:none}
-  .nav-links{display:none}
-  .nav-links.open{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;
-    background:var(--bg-2);border-bottom:1px solid var(--border);padding:10px 24px}
-  .nav-links.open a{padding:13px 0;border-bottom:1px solid var(--border);width:100%}
-  .nav-links.open .nav-cta{margin:12px 0;text-align:center}
-  .burger{display:block}
-  .cta-wrap{padding:34px 26px}
-  section{padding:70px 0}
-}
-@media(max-width:480px){
-  .stats{grid-template-columns:1fr}
-  .road{grid-template-columns:1fr}
-  .flow-arrow{transform:rotate(90deg)}
-}
-</style>
-</head>
-<body>
-<div class="bg-deco"></div>
-<div class="grid-deco"></div>
-
-<header>
-  <div class="wrap nav">
-    <a href="#top" class="logo"><span class="mark">J</span> Jarvice</a>
-    <nav class="nav-links" id="navlinks">
-      <a href="#problem">Зачем</a>
-      <a href="#security">Безопасность</a>
-      <a href="#pipeline">Точность</a>
-      <a href="#compare">Сравнение</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="#cta" class="nav-cta">Запросить пилот</a>
-    </nav>
-    <button class="burger" id="burger" aria-label="Меню">☰</button>
-  </div>
-</header>
-
-<!-- HERO -->
-<section class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div class="reveal in">
-      <span class="eyebrow">🔒 Privacy-first · v0.2.1</span>
-      <h1>The <span class="accent">Jarvice</span></h1>
-      <p class="lede">AI-помощник для безопасной работы с корпоративным контекстом.</p>
-      <p class="sub">Собирает важное из почты, чатов и документов, помогает быстрее принимать решения и не раскрывает персональные данные внешнему AI.</p>
-      <div class="hero-actions">
-        <a href="#cta" class="btn btn-primary">Запросить пилот →</a>
-        <a href="#security" class="btn btn-ghost">Как это работает</a>
-      </div>
-      <div class="hero-badges">
-        <span class="hero-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M12 2 4 6v6c0 5 8 8 8 8s8-3 8-8V6z"/><path d="m9 12 2 2 4-4"/></svg> ПДн не уходят в LLM</span>
-        <span class="hero-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Локальный, облачный и API-режим</span>
-      </div>
-    </div>
-    <div class="hero-visual reveal in">
-      <div class="ring r1"></div>
-      <div class="ring r2"></div>
-      <div class="orb"><span class="big-j">J</span></div>
-      <div class="chip c1"><span class="dot"></span> Почта · Чаты · Документы</div>
-      <div class="chip c2"><span class="dot"></span> Обезличивание</div>
-      <div class="chip c3"><span class="dot"></span> Готовый ответ</div>
-    </div>
-  </div>
-</section>
-
-<!-- PROBLEM / SOLUTION -->
-<section id="problem">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">5 минут вместо 2 часов</span>
-      <h2>Jarvice превращает <span class="accent">информационный шум</span> в понятные действия</h2>
-      <p>Меньше времени на разбор переписки — больше на решения. И ни одного персонального данного во внешнем AI.</p>
-    </div>
-    <div class="ps-grid">
-      <div class="ps-card reveal">
-        <h3><span class="tag bad">Проблема</span></h3>
-        <ul class="ps-list">
-          <li><span class="ico bad">!</span><span>Почта, чаты и документы множатся быстрее, чем их успеваешь читать.</span></li>
-          <li><span class="ico bad">!</span><span><b>Важные сигналы теряются</b> в потоке сообщений.</span></li>
-          <li><span class="ico bad">!</span><span>На разбор уходит <b>1–2 часа каждое утро</b>.</span></li>
-          <li><span class="ico bad">!</span><span>Корпоративные данные <b>опасно</b> отправлять во внешний AI.</span></li>
-        </ul>
-      </div>
-      <div class="ps-card reveal">
-        <h3><span class="tag good">Решение</span></h3>
-        <ul class="ps-list">
-          <li><span class="ico good">✓</span><span><b>Забирает информацию</b> из рабочих систем и собирает контекст.</span></li>
-          <li><span class="ico good">✓</span><span><b>Убирает персональные данные</b> перед отправкой в AI.</span></li>
-          <li><span class="ico good">✓</span><span>Передаёт в AI <b>только обезличенный текст</b>.</span></li>
-          <li><span class="ico good">✓</span><span><b>Возвращает готовый результат</b>: сводку и рекомендации.</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<section style="padding-top:0">
-  <div class="wrap">
-    <div class="stats">
-      <div class="stat reveal"><div class="num">5 мин</div><div class="lab">вместо 1–2 часов на утренний разбор</div></div>
-      <div class="stat reveal"><div class="num">3 модели</div><div class="lab">проверяют точность в одном пайплайне</div></div>
-      <div class="stat reveal"><div class="num">≥ 95%</div><div class="lab">минимальная точность совпадения данных</div></div>
-      <div class="stat reveal"><div class="num">100%</div><div class="lab">качество анонимизации в локальном контуре</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- SECURITY + MODES -->
-<section id="security">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Безопасность прежде всего</span>
-      <h2>Данные защищены, а режим <span class="accent">выбирается под задачу</span></h2>
-      <p>Мы строим Jarvice вокруг принципа privacy-first: вы решаете, где и как обрабатывать ваши данные.</p>
-    </div>
-
-    <div class="flow reveal">
-      <div class="flow-step">
-        <div class="fi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/></svg></div>
-        <h4>Оригинальные данные</h4><p>почта, чаты, документы</p>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">
-        <div class="fi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></div>
-        <h4>Обезличивание</h4><p>удаление ПДн</p>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">
-        <div class="fi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0 0 8v1a4 4 0 0 0 8 0v-1a4 4 0 0 0 0-8V6a4 4 0 0 0-4-4z"/></svg></div>
-        <h4>AI</h4><p>обработка контекста</p>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">
-        <div class="fi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
-        <h4>Готовый ответ</h4><p>сводка и решения</p>
-      </div>
-    </div>
-
-    <div class="modes">
-      <div class="mode reveal">
-        <div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/><rect x="9" y="13" width="6" height="7"/></svg></div>
-        <h3>1. Локальный режим</h3>
-        <div class="mtag">Максимальная приватность</div>
-        <p>Данные остаются только у вас и не покидают ваш контур. Дополнительная локальная модель доводит качество анонимизации до 100%.</p>
-      </div>
-      <div class="mode reveal">
-        <div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.5A4.5 4.5 0 0 1 18 16z"/></svg></div>
-        <h3>2. Облачный режим</h3>
-        <div class="mtag">Выше качество и удобство</div>
-        <p>Доработанный процесс обезличивания: в облачную LLM уходит только обезличенный текст. Данные покидают контур исключительно без ПДн.</p>
-      </div>
-      <div class="mode reveal">
-        <div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg></div>
-        <h3>3. API-режим</h3>
-        <div class="mtag">Интеграция в ваши процессы</div>
-        <p>Встраивание Jarvice в существующие сервисы и сценарии команды через API. Privacy-слой работает на всех уровнях.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PIPELINE / ACCURACY -->
-<section id="pipeline" style="padding-top:0">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Контроль точности</span>
-      <h2>Три модели в разных ролях — <span class="accent">в одном пайплайне</span></h2>
-      <p>Точность данных проверяется несколькими моделями, а не одной. Совпадение не опускается ниже 95% — иначе результат не уходит дальше.</p>
-    </div>
-    <div class="pipeline reveal">
-      <div class="pipe-head">
-        <div class="pipe-badge">≥ 95% <span style="font-size:15px;color:var(--muted);font-weight:600">точность совпадения</span></div>
-      </div>
-      <div class="pipe-roles">
-        <div class="role">
-          <div class="rn">Роль 1 · Извлечение</div>
-          <h4>Сбор и структурирование</h4>
-          <p>Первая модель извлекает факты и формирует обезличенный контекст из исходных данных.</p>
-        </div>
-        <div class="role">
-          <div class="rn">Роль 2 · Проверка</div>
-          <h4>Кросс-валидация</h4>
-          <p>Вторая модель независимо перепроверяет извлечённое и сверяет совпадение результатов.</p>
-        </div>
-        <div class="role">
-          <div class="rn">Роль 3 · Контроль</div>
-          <h4>Финальный арбитр</h4>
-          <p>Третья модель подтверждает точность ≥ 95% и допускает ответ только при прохождении порога.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- COMPARISON -->
-<section id="compare">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Почему не просто ChatGPT или Copilot</span>
-      <h2>Управляемый слой между <span class="accent">данными, безопасностью и AI</span></h2>
-      <p>ChatGPT — сильная модель. Copilot — сильная экосистема. Jarvice закрывает разрыв между универсальным LLM и реальным корпоративным контекстом.</p>
-    </div>
-    <div class="cmp reveal">
-      <table>
-        <thead>
-          <tr><th>Возможность</th><th class="jcol">Jarvice</th><th>ChatGPT</th><th>Copilot</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="feat">Работа с корпоративным контекстом</td><td class="cell jcol"><span class="yes">✓</span></td><td class="cell"><span class="part">~</span></td><td class="cell"><span class="yes">✓</span></td></tr>
-          <tr><td class="feat">Защита персональных данных</td><td class="cell jcol"><span class="yes">✓</span></td><td class="cell"><span class="no">✕</span></td><td class="cell"><span class="part">~</span></td></tr>
-          <tr><td class="feat">Локальный режим</td><td class="cell jcol"><span class="yes">✓</span></td><td class="cell"><span class="no">✕</span></td><td class="cell"><span class="no">✕</span></td></tr>
-          <tr><td class="feat">Контроль точности (3 модели, ≥95%)</td><td class="cell jcol"><span class="yes">✓</span></td><td class="cell"><span class="no">✕</span></td><td class="cell"><span class="no">✕</span></td></tr>
-          <tr><td class="feat">Обезличивание перед отправкой в AI</td><td class="cell jcol"><span class="yes">✓</span></td><td class="cell"><span class="no">✕</span></td><td class="cell"><span class="no">✕</span></td></tr>
-          <tr><td class="feat">Telegram / внешний доступ</td><td class="cell jcol"><span class="yes">✓</span></td><td class="cell"><span class="part">~</span></td><td class="cell"><span class="no">✕</span></td></tr>
-          <tr><td class="feat">Прозрачность и контроль данных</td><td class="cell jcol"><span class="yes">✓</span></td><td class="cell"><span class="no">✕</span></td><td class="cell"><span class="part">~</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ROADMAP -->
-<section id="roadmap">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Что дальше</span>
-      <h2>От первого полевого теста — к <span class="accent">AI-помощнику для команды</span></h2>
-      <p>Предлагаемый следующий шаг: запустить пилот на ограниченном контуре и оценить пользу в реальных ежедневных сценариях.</p>
-    </div>
-    <div class="road">
-      <div class="road-step reveal"><div class="road-num">1</div><h4>Первая польза</h4><p>Jarvice собирает информацию и помогает быстрее увидеть главное в потоке.</p></div>
-      <div class="road-step reveal"><div class="road-num">2</div><h4>Регулярная работа</h4><p>Сводки становятся ежедневной практикой — фокус держится на главном.</p></div>
-      <div class="road-step reveal"><div class="road-num">3</div><h4>Больше корпоративного знания</h4><p>Учитываются документы и базы знаний — меньше повторяющихся вопросов.</p></div>
-      <div class="road-step reveal"><div class="road-num">4</div><h4>Командное использование</h4><p>Инструмент расширяется на команду: общие сценарии и правила безопасности.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA / FORM -->
-<section id="cta">
-  <div class="wrap">
-    <div class="cta-wrap reveal">
-      <div class="cta-grid">
-        <div>
-          <span class="eyebrow">Следующий шаг</span>
-          <h2 style="margin-top:16px">Запросить пилот Jarvice</h2>
-          <p class="muted">Запустим пилот на ограниченном контуре и покажем пользу в ваших ежедневных сценариях — без раскрытия персональных данных внешнему AI.</p>
-          <ul class="cta-list">
-            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Ограниченный контур, ваши данные под контролем</li>
-            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Реальные сценарии вашей команды</li>
-            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Оценка пользы за несколько дней</li>
-          </ul>
-        </div>
-        <div>
-          <form id="pilotForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-            <label for="name">Имя</label>
-            <input id="name" name="name" type="text" placeholder="Как к вам обращаться" required>
-            <label for="company">Компания</label>
-            <input id="company" name="company" type="text" placeholder="Название компании">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" placeholder="you@company.com" required>
-            <label for="msg">Задача для пилота</label>
-            <textarea id="msg" name="message" placeholder="Коротко: какой процесс хотите ускорить"></textarea>
-            <button type="submit" class="btn btn-primary">Отправить заявку →</button>
-            <p class="form-alt">или напишите в <a href="https://t.me/jarvice_ai" target="_blank" rel="noopener">Telegram →</a></p>
-          </form>
-          <div class="form-ok" id="formOk">✓ Заявка отправлена. Мы свяжемся с вами в ближайшее время.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap foot">
-    <a href="#top" class="logo"><span class="mark">J</span> Jarvice</a>
-    <span>Privacy-first AI · v0.2.1 · ПДн не уходят в LLM</span>
-    <span>© 2026 Jarvice</span>
-  </div>
-</footer>
-
-<script>
-// mobile menu
-const burger=document.getElementById('burger'),nav=document.getElementById('navlinks');
-burger.addEventListener('click',()=>nav.classList.toggle('open'));
-nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
-
-// scroll reveal
-const io=new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
-},{threshold:0.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-// form submit (Formspree-compatible AJAX; falls back to default if not configured)
-const form=document.getElementById('pilotForm'),ok=document.getElementById('formOk');
-form.addEventListener('submit',async(e)=>{
-  if(form.action.includes('YOUR_FORM_ID')){
-    e.preventDefault();
-    alert('Форма не подключена. Замените YOUR_FORM_ID в action на ваш endpoint Formspree (или другой обработчик).');
-    return;
-  }
-  e.preventDefault();
-  try{
-    const r=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
-    if(r.ok){form.style.display='none';ok.style.display='block';}
-    else{alert('Не удалось отправить. Попробуйте Telegram.');}
-  }catch(_){alert('Ошибка сети. Попробуйте Telegram.');}
-});
-</script>
-</body>
-</html>
+</div></section><section id="skills"><div class="wrap skills"><div class="head reveal"><div class="eyebrow">Библиотека навыков</div><h2>Jarvice растёт <span class="blue">вместе с вашими задачами</span></h2><p>Начните с полезных сценариев. Новые навыки подключаются без перестройки системы.</p></div><div class="skill-groups"><article class="skill-group reveal"><div class="group-head"><h3>Уже доступно</h3><span>ГОТОВО</span></div><div class="skill-list"><span class="skill"><i>✓</i>Утренняя сводка</span><span class="skill"><i>✓</i>Выжимка переписки</span><span class="skill"><i>✓</i>Поиск решений</span><span class="skill"><i>✓</i>Подготовка к встрече</span><span class="skill"><i>✓</i>Риски и блокеры</span><span class="skill"><i>✓</i>Контроль поручений</span><span class="skill"><i>✓</i>Исследование темы</span><span class="skill"><i>✓</i>Работа с документами</span><span class="skill"><i>✓</i>Голосовое управление</span></div></article><article class="skill-group reveal"><div class="group-head"><h3>Можно подключить</h3><span>ПОД ЗАДАЧУ</span></div><div class="skill-list"><span class="skill"><i>+</i>CRM и продажи</span><span class="skill"><i>+</i>Аналитика проектов</span><span class="skill"><i>+</i>Финансовые отчёты</span><span class="skill"><i>+</i>Поддержка клиентов</span><span class="skill"><i>+</i>HR-контекст</span></div></article><article class="skill-group reveal"><div class="group-head"><h3>Библиотека пополняется</h3><span>SKILL LIBRARY</span></div><p class="library-note">Нужного навыка ещё нет? Опишем процесс, подключим источники и добавим его в ваш Jarvice.</p></article></div></div></section>
+<section id="pilot"><div class="wrap cta-box reveal"><div class="cta-grid"><div class="cta"><div class="eyebrow">Пилот на реальном сценарии</div><h2>Покажем, что Jarvice найдёт в вашем рабочем потоке</h2><p class="muted">Выберем регулярную управленческую задачу, подключим контекст и соберём первый полезный результат.</p><ul class="checks"><li>Сценарий, который отнимает время</li><li>Архитектура под требования к приватности</li><li>Понятный критерий пользы до старта</li></ul></div><form class="lead" id="leadForm"><div class="field"><label for="name">Имя</label><input id="name" name="name" required placeholder="Как к вам обращаться"></div><div class="field"><label for="company">Компания</label><input id="company" name="company" placeholder="Название компании"></div><div class="field"><label for="mode">Что важнее?</label><select id="mode" name="mode"><option>Ежедневные сводки</option><option>Корпоративная память The Brain</option><option>Автоматизация процессов</option><option>Приватная работа с AI</option></select></div><div class="field"><label for="task">Какую задачу хотите снять?</label><textarea id="task" name="task" placeholder="Коротко опишите процесс"></textarea></div><button class="btn btn-primary" type="submit">Обсудить пилот в Telegram →</button><p class="note">Форма откроет Telegram с подготовленным сообщением. <a href="https://t.me/jarvice_ai">Написать напрямую</a></p></form></div></div></section>
+</main><footer><div class="wrap foot"><a class="brand" href="#top"><svg class="logo" viewBox="0 0 48 48"><path d="M24 3 43 14v21L24 46 5 35V14Z" fill="#071324" stroke="#258bff" stroke-width="2"/><path d="m24 3 19 11-9 5-10-6-10 6-9-5Z" fill="#20d5e7"/><path d="M43 14v21L24 46V35l10-6V19Z" fill="#297df4"/><path d="M5 14v21l19 11V35l-10-6V19Z" fill="#1ccbdc"/></svg><span>JARVICE</span></a><p>AI-помощник с контекстом вашего бизнеса</p></div></footer>
+<script>const topbar=document.getElementById('topbar'),burger=document.getElementById('burger'),links=document.getElementById('links');addEventListener('scroll',()=>topbar.classList.toggle('scrolled',scrollY>20),{passive:true});burger.onclick=()=>links.classList.toggle('open');links.querySelectorAll('a').forEach(a=>a.onclick=()=>links.classList.remove('open'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));document.getElementById('leadForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget),m='Здравствуйте! Хочу обсудить пилот Jarvice.\nИмя: '+f.get('name')+'\nКомпания: '+(f.get('company')||'—')+'\nИнтерес: '+f.get('mode')+'\nЗадача: '+(f.get('task')||'—');window.open('https://t.me/jarvice_ai?text='+encodeURIComponent(m),'_blank','noopener')}</script>
+</body></html>
