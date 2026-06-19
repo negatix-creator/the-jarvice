@@ -1,200 +1,226 @@
-# The Jarvice 🤖
+# The Jarvice
 
-**Full-stack AI assistant with corporate data summaries, memory, and scheduling**
+**AI-помощник для безопасной работы с корпоративным контекстом**
 
-The Jarvice installs a complete system: OpenClaw agent framework + data scrapers + PII anonymization + AI summaries + Telegram delivery — all on your machine.
+The Jarvice — корпоративная система, которая собирает данные из Exchange, Teams и календарей, обезличивает их и формирует AI-сводки для руководителей. Персональные данные не покидают ваше устройство: локальный NER-конвейер заменяет имена, email и телефоны на токены перед любой отправкой в LLM.
 
-## ✨ What you get
-
-- 📧 **Exchange scraping** — email + calendar via EWS
-- 💬 **Teams scraping** — chats + meetings via IC3 token
-- 🔒 **PII anonymization** — RED/GREEN pipeline, names/emails never leave your machine
-- 🤖 **AI summaries** — cloud models (glm-5.2:cloud primary, glm-5.1:cloud fallback)
-- 🧠 **Memory & embeddings** — nomic-embed-text for semantic search
-- 📲 **Telegram delivery** — HTML summaries with smart chunking
-- ⏰ **Scheduled summaries** — morning + evening via cron
-- 🛡️ **Security-first** — Keychain credentials, log sanitization, audit log
-- 🔧 **Full system** — OpenClaw + Jarvice + Ollama + agent, one command
-- 🚀 **One-command deploy** — `scripts/deploy-openclaw-{macos,linux}.sh`
-
-## ⚡ Quick Start
-
-### Option A: The Jarvice full pipeline (with scrapers)
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/negatix-creator/the-jarvice/main/setup.sh)
-```
-
-This installs: Homebrew, Python 3.12, Node.js, OpenClaw, Ollama + models, The Jarvice pipeline, workspace, config.
-
-### Option B: Just OpenClaw + bot (no scrapers)
-
-For deploying an OpenClaw agent on any macOS or Linux machine — no scrapers, just bot + memory + cloud models:
-
-**macOS:**
-```bash
-scp scripts/deploy-openclaw-macos.sh user@host:/tmp/
-scp ~/.ollama/id_ed25519 user@host:~/.ollama/id_ed25519
-scp ~/.ollama/id_ed25519.pub user@host:~/.ollama/id_ed25519.pub
-ssh user@host 'BOT_TOKEN=<token> OWNER_TG_ID=<id> OLLAMA_KEY=*** bash /tmp/deploy-openclaw-macos.sh'
-```
-
-**Linux (Ubuntu/Debian/Fedora/CentOS/Alpine):**
-```bash
-scp scripts/deploy-openclaw-linux.sh user@host:/tmp/
-scp ~/.ollama/id_ed25519 user@host:~/.ollama/id_ed25519
-scp ~/.ollama/id_ed25519.pub user@host:~/.ollama/id_ed25519.pub
-ssh user@host 'BOT_TOKEN=<token> OWNER_TG_ID=<id> OLLAMA_KEY=*** bash /tmp/deploy-openclaw-linux.sh'
-```
-
-Both deploy scripts:
-- Install packages (Node, OpenClaw, Ollama)
-- Copy Ollama SSH-key for cloud model authorization
-- Create config (glm-5.2:cloud + glm-5.1:cloud, Telegram bot, memory health)
-- Set up auto-start services (LaunchAgent on macOS, systemd on Linux)
-- Run 8-9 smoke tests
-
-### After setup
-
-```bash
-the-jarvice doctor && openclaw status   # verify
-the-jarvice run --once                   # first summary
-the-jarvice enable                        # schedule daily summaries
-```
-
-## 📋 Example Summary
-
-```
-📅 Morning Summary — May 21, 2026
-
-🏢 Important:
-• [SENDER_1]: Q2 Budget Review — deadline Friday
-• [SENDER_2]: Production incident — P1 escalation
-
-📋 Follow-ups:
-• [SENDER_3]: Contract renewal — response needed by May 25
-• [SENDER_4]: Team standup moved to 11:00
-
-📌 Deadlines:
-• Q2 budget submission — May 23
-• Security audit response — May 26
-```
-
-> All names are anonymized ([SENDER_N]). Only you see real names in Telegram.
-
-## 🔧 Commands
-
-| Command | Description |
-|---------|-------------|
-| `the-jarvice configure` | Full configuration wizard |
-| `the-jarvice configure --quick` | Quick setup (email + password + bot token) |
-| `the-jarvice configure --reauth exchange` | Re-configure Exchange credentials |
-| `the-jarvice run --once` | Run pipeline once |
-| `the-jarvice run --once --dry-run` | Run without sending to Telegram |
-| `the-jarvice doctor` | Diagnose system health (12+ checks) |
-| `the-jarvice enable` | Enable scheduled summaries |
-| `the-jarvice disable` | Disable scheduled summaries |
-| `the-jarvice version` | Show version |
-| `the-jarvice uninstall` | Remove The Jarvice |
-| `openclaw status` | Check gateway, channels, models |
-| `openclaw channels add` | Add Telegram/Signal channel |
-| `openclaw gateway run` | Start the agent gateway |
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────┐
-│                  OpenClaw Gateway                │
-│         (agent framework, memory, cron)          │
-├─────────────────────────────────────────────────┤
-│                                                  │
-│  Exchange/Teams ──► PII Anonymizer ──► LLM      │
-│                     (RED → GREEN)     (summary)   │
-│                         │               │         │
-│                    Keychain          Ollama       │
-│                    (creds)        (cloud/local)  │
-│                                        │         │
-└────────────────────────────────────────┼─────────┘
-                                        │
-                                   Telegram ──► You
-```
-
-- **Cloud Mode** — anonymized data to glm-5.2:cloud (primary) + glm-5.1:cloud (fallback). No GPU needed.
-- **Enhanced Mode** — cloud + knowledge graph (planned)
-
-## 📋 Requirements
-
-- macOS 12+ (Apple Silicon or Intel) OR Linux (Ubuntu/Debian/Fedora/CentOS)
-- 3 GB free disk space
-- Internet connection (for cloud models and Telegram)
-- Telegram account (for bot creation)
-- Ollama SSH-key (for cloud model authorization — provided by deploy script)
-
-## 🔒 Security
-
-- **PII never leaves your machine** — RED directory (`chmod 700`) holds raw data
-- **Credentials in Keychain** — macOS Keychain / Linux keyring, not config files
-- **Anonymized before LLM** — all names/emails replaced with [SENDER_N] tokens
-- **Path traversal protection** — PII directories validated
-- **Ollama prompt hardening** — system prompt prevents injection
-- **Log sanitization** — tokens and passwords masked in all output
-
-## 🔍 Troubleshooting
-
-```bash
-# Full system check
-the-jarvice doctor && openclaw status
-
-# Re-configure credentials
-the-jarvice configure --quick
-
-# Ollama issues
-ollama list                    # check models
-ollama pull glm-5.2:cloud      # re-download model
-
-# Cloud model 403 error?
-# → Ollama SSH-key not authorized. Run deploy script with OLLAMA_KEY param.
-
-# Gateway crash loop?
-# → Check config: openclaw config validate
-# → Common cause: invalid plugins.entries.*.config (remove unsupported fields)
-
-# View logs
-# macOS:
-cat /tmp/openclaw-gateway.log
-# Linux:
-sudo journalctl -u openclaw-gateway --no-pager -n 30
-
-# Reset and re-setup
-the-jarvice uninstall
-bash <(curl -fsSL https://raw.githubusercontent.com/negatix-creator/the-jarvice/main/setup.sh)
-```
-
-## 📁 Directory Layout
-
-```
-~/.the-jarvice/
-├── config.yaml          # Main configuration
-├── venv/                # Python virtual environment
-├── src/the-jarvice/     # Source code (git clone)
-├── data/pii/
-│   ├── RED/             # Raw PII data (chmod 700)
-│   └── GREEN/           # Anonymized data
-└── logs/                # Application logs
-
-~/.openclaw/
-├── openclaw.json        # OpenClaw gateway config
-└── workspace/
-    ├── AGENTS.md        # Agent role definition
-    ├── SOUL.md          # Agent personality
-    ├── MEMORY.md        # Agent memory
-    └── memory/          # Daily memory dumps
-```
-
-## 📄 License
-
-MIT
+**Версия:** v0.5.0 (20 июня 2026)
+**Лицензия:** Commercial (proprietary)
 
 ---
 
-*The Jarvice v0.4.0 — Full-stack AI assistant with privacy-first approach*
+## Ключевые возможности
+
+### 🔒 PII Pipeline — анонимизация данных
+
+Полный конвейер обезличивания перед отправкой в LLM:
+
+- **RED/** — оригинальные данные (chmod 700, доступ только системному пользователю)
+- **Anonymizer** — NER-модель qwen3:14b + regex-классификатор (телефоны, email, ИНН, СНИЛС)
+- **GREEN/** — обезличенные данные с консистентными токенами `[PERSON_N]`, `[EMAIL_N]`, `[PHONE_N]`
+- **MappingManager** — сквозная консистентность токенов: `[PERSON_42]` = один и тот же человек во всех файлах
+- **Deanonymizer** — локальная подмена масок на реальные имена перед доставкой сводки пользователю
+
+**Статистика:** 22 000+ файлов обработано, 749 persons и 744 emails в mapping, 0 утечек ПДн.
+
+### 🧠 Brain Ingest — граф знаний
+
+Автоматическое извлечение атомов знаний из памяти агентов:
+
+- **Extraction:** DeepSeek V4 Pro — 106 атомов, 0 галлюцинаций, 160 сек на цикл
+- **Validation:** GLM 5.1 — cross-model верификация для исключения галлюцинаций
+- **Pipeline ускорение:** 707 сек → 198 сек (−72%) после оптимизации моделей
+- **Объём:** 937 атомов знаний, 16 типов сущностей, 12 типов связей
+
+### ✅ Multi-pass Validation
+
+Каждая сводка проходит многоуровневую валидацию:
+- Prompt-level: проверка фактов против источников, точность ≥ 95%
+- Infra-level: pre-flight и post-run проверки доступности моделей и сервисов
+
+### 🤖 6 агентов
+
+| Агент | Роль |
+|-------|------|
+| **Jarvis** | Основной ассистент: сводки, контекст, встречи |
+| **Friday** | DevOps и безопасность инфраструктуры |
+| **Edith** | Финансовая аналитика и отчёты |
+| **HERA** | Бизнес-консультант и кризис-менеджмент |
+| **Ultron** | Аналитика Brain и метрики знаний |
+| **Jeeves** | Персональный ассистент клиента |
+
+### ⏰ 27 кронов
+
+Автоматические задачи по расписанию: утренние и вечерние сводки, скрейпинг Exchange и Teams, brain ingest (2×/день), health checks, backup, security watchdog, memory management.
+
+---
+
+## Триры работы
+
+| Тир | Модель | Данные | Назначение |
+|-----|--------|--------|------------|
+| **Private Mode** | Ollama (локально) | Все данные на устройстве | Максимальная приватность, GPU на машине |
+| **Enhanced Mode** | Cloud LLM | GREEN (обезличенные) данные | Быстродействие без риска утечки ПДн |
+| **Knowledge Mode** | Cloud LLM + RAG | GREEN + граф знаний The Brain | Контекстуальные сводки с корпоративным графом (в разработке) |
+
+---
+
+## Архитектура
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    OpenClaw Gateway                       │
+│            (агент-фреймворк, память, кроны)               │
+├──────────────────────────────────────────────────────────┤
+│                                                           │
+│  Exchange ──► RED/ ──► Anonymizer ──► GREEN/ ──► LLM     │
+│  Teams    ──► RED/ ──► (NER qwen3:14b    (сводка)        │
+│  Calendar ──► RED/      + regex)            │             │
+│                          │                   │             │
+│                    MappingManager      Deanonymizer       │
+│                    (консистентные         (маски →        │
+│                     токены)              реальные имена)  │
+│                          │                   │             │
+│                     Keychain              Telegram ──► Пользователь
+│                     (креды)                                 │
+│                                                           │
+│              The Brain (граф знаний)                      │
+│              937 атомов, 16 типов, 12 типов связей        │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Принцип:** ПДн (имена, email, телефоны, ИНН) никогда не покидают устройство. В LLM уходят только обезличенные токены. Deanonymizer локально подставляет реальные имена перед отправкой сводки в Telegram.
+
+---
+
+## Безопасность
+
+- **ПДн не уходят в LLM** — все имена, email, телефоны заменяются на токены перед отправкой
+- **Локальный NER** — модель qwen3:14b работает на устройстве, не передаёт данные наружу
+- **RED/ директория** — оригиналы хранятся с chmod 700, доступ только системному пользователю
+- **MappingManager** — консистентные токены обеспечивают корректность без раскрытия ПДн
+- **Deanonymizer** — замена масок на реальные имена происходит локально, перед доставкой
+- **Keychain** — креды в macOS Keychain / Linux keyring, не в конфигах
+- **Log sanitization** — токены и пароли маскируются во всех логах
+- **Memory PII-очистка** — 102 файла memory обезличены, 1412 замен, 0 утечек
+- **Name Lookup + Deanonymizer** — lookup ФИО → `[PERSON_N]` с fuzzy matching для склонений
+
+---
+
+## Модели
+
+| Назначение | Модель | Комментарий |
+|------------|--------|-------------|
+| Extraction (Brain Ingest) | DeepSeek V4 Pro | 106 атомов, 0 галлюцинаций, 160 сек |
+| Validation (Brain Ingest) | GLM 5.1 | Cross-model верификация |
+| NER (локальный) | qwen3:14b | Распознавание именованных сущностей, локально |
+| Summary (основная) | GLM 5.2 Cloud | Сводки писем и встреч |
+| Summary (fallback) | GLM 5.1 Cloud | Резервная модель |
+| Embeddings | nomic-embed-text | Семантический поиск по памяти |
+
+---
+
+## Требования
+
+- **macOS 13+** (Apple Silicon или Intel) или **Linux** (Ubuntu 20.04+/Debian 11+/Fedora 38+/CentOS 9+)
+- **Node.js 20+** — для OpenClaw gateway
+- **Ollama** — для локальных моделей и авторизации cloud моделей
+- **Python 3.10+** — для скрейперов и PII pipeline
+- **8 ГБ RAM** (рекомендуется 16 ГБ для локальных моделей)
+- **10 ГБ свободного диска** — модели, данные, логи
+- **Интернет** — для cloud моделей и Telegram
+- **Telegram-бот** — для доставки сводок
+- **Exchange EWS** — доступ к почтовому ящику (on-premise или hosted)
+
+---
+
+## Установка
+
+### macOS
+
+```bash
+bash <(curl -fsSL https://jarvice.ru/install/macos.sh)
+```
+
+### Linux (Ubuntu/Debian/Fedora/CentOS)
+
+```bash
+bash <(curl -fsSL https://jarvice.ru/install/linux.sh)
+```
+
+Скрипт установки:
+- Устанавливает Homebrew, Python 3.12, Node.js, OpenClaw, Ollama
+- Загружает модели (qwen3:14b, nomic-embed-text, cloud-модели)
+- Создаёт структуру директорий (RED/GREEN pipeline)
+- Настраивает LaunchAgent (macOS) или systemd (Linux) для автозапуска
+- Запускает 12+ smoke-тестов для проверки системы
+
+### После установки
+
+```bash
+the-jarvice configure        # Настройка кред (Exchange, Telegram)
+the-jarvice doctor           # Проверка системы
+the-jarvice run --once       # Первая сводка
+the-jarvice enable           # Включить расписание
+```
+
+---
+
+## Команды
+
+| Команда | Описание |
+|---------|----------|
+| `the-jarvice configure` | Интерактивная настройка |
+| `the-jarvice configure --quick` | Быстрая настройка (email + пароль + токен бота) |
+| `the-jarvice run --once` | Запустить pipeline один раз |
+| `the-jarvice run --once --dry-run` | Запустить без отправки в Telegram |
+| `the-jarvice doctor` | Диагностика системы (12+ проверок) |
+| `the-jarvice enable` | Включить плановые сводки |
+| `the-jarvice disable` | Отключить плановые сводки |
+| `the-jarvice version` | Версия продукта |
+| `the-jarvice uninstall` | Удаление системы |
+| `openclaw status` | Статус gateway, каналов, моделей |
+
+---
+
+## Структура директорий
+
+```
+~/.the-jarvice/
+├── config.yaml              # Конфигурация
+├── venv/                    # Python-окружение
+├── src/the-jarvice/         # Исходный код
+├── data/pii/
+│   ├── RED/                 # Оригиналы (chmod 700)
+│   └── GREEN/               # Обезличенные данные
+└── logs/                    # Логи
+
+~/.openclaw/
+├── openclaw.json            # Конфигурация gateway
+└── workspace/
+    ├── AGENTS.md            # Роль агента
+    ├── SOUL.md              # Личность агента
+    ├── MEMORY.md            # Память
+    └── memory/              # Ежедневные дампы памяти
+```
+
+---
+
+## Лицензия
+
+The Jarvice распространяется под **коммерческой проприетарной лицензией**. Использование, копирование, модификация и распространение без действующей лицензии запрещены.
+
+- **Production License** — для использования во внутренних бизнес-процессах
+- **Hosting License** — для предоставления SaaS / managed services
+- **Integration License** — для встраивания в proprietary-продукты
+- **Evaluation License** — 30 дней для оценки продукта
+
+Для приобретения лицензии и получения коммерческого предложения:
+
+- 🌐 [jarvice.ru](https://jarvice.ru)
+- 📧 sales@jarvice.ru
+- 💬 Telegram: [@jarvice_ai](https://t.me/jarvice_ai)
+
+---
+
+*The Jarvice v0.5.0 — Корпоративный AI-ассистент с приватностью по умолчанию*
