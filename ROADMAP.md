@@ -1,11 +1,12 @@
 # The Jarvice — Roadmap
 
-> **Последнее обновление: 2026-06-20**
+> **Последнее обновление: 2026-06-23**
 
 ## Текущий статус
 
 **Версия:** v0.5.0
 **Дата релиза:** 20 июня 2026
+**Последнее обновление:** 22 июня 2026
 
 ### Что работает в v0.5.0
 
@@ -31,7 +32,12 @@
 - ✅ **CI:** GitHub Actions (macOS + Ubuntu, Python 3.10-3.13)
 - ✅ **6 агентов:** Jarvis, Friday, Edith, HERA, Ultron, Jeeves
 - ✅ **27 кронов:** сводки, скрейпинг, brain ingest, health checks, backup, security watchdog
-- ✅ **Multi-client deployment:** VPS, macOS, Linux — deploy scripts проверены в продакшне
+- ✅ **Multi-client deployment:** VPS, macOS, Linux — deploy scripts проверены в продакшне (mac Мурада, 19.06)
+- ✅ **Deploy scripts:** macOS + Linux одним скриптом (scripts/deploy-openclaw-macos.sh, scripts/deploy-openclaw-linux.sh)
+- ✅ **Create-bot skill v2:** Часть 12 — Memory Management & Session Health (pruneAfter, daily restart, weekly cleanup)
+- ✅ **INFRASTRUCTURE_REGISTRY.md:** Мак Мурада (#8) зарегистрирован, статус ✅ "Настроен" (mac Мурада, 19.06)
+- ✅ **Deploy scripts:** macOS + Linux одним скриптом (scripts/deploy-openclaw-macos.sh, scripts/deploy-openclaw-linux.sh)
+- ✅ **Create-bot skill v2:** Часть 12 — Memory Management & Session Health (pruneAfter, daily restart, weekly cleanup)
 
 ### 3 тира работы
 
@@ -59,11 +65,15 @@
 - Validation: GLM 5.1 (cross-model верификация)
 - Pipeline: 707 сек → 198 сек (−72%)
 - 937 атомов, 16 типов сущностей, 12 типов связей
+- **Новое (19.06):** Бенчмарк 7 моделей, принята оптимальная конфигурация (DeepSeek V4 Pro extract + GLM 5.1 validate + qwen3:14b NER)
+- **Обновление (22.06):** 1042 атома (+105 за 2 дня), brain ingest nightly работает стабильно
 
-### Коммерческая лицензия
+### Коммерческая лицензия + Deploy
 - MIT → Proprietary Commercial License
 - Production / Hosting / Integration / Evaluation лицензии
 - Продукт позиционируется для B2B и корпоративных клиентов
+- **Обновление (22.06):** Deploy scripts macOS+Linux — проверены в продакшне (мак Мурада). INFRASTRUCTURE_REGISTRY.md #8 — статус "Настроен".
+  - Backup script `scripts/backup.sh` — добавлен обработчик exit 23 (race condition sqlite-wal)
 
 ---
 
@@ -141,7 +151,11 @@
 | GLM 5.1 для validation | 2026-06-20 | Cross-model diversity — разная архитектура от extraction |
 | qwen3:14b для NER | 2026-06-20 | Локальная модель, не передаёт ПДн наружу, достаточное качество распознавания |
 | Memory PII-очистка | 2026-06-20 | 102 файла memory/*.md обезличены, консистентные токены с GREEN/ |
+| Deploy scripts (macOS/Linux) | 2026-06-20 | Полный деплой одним скриптом, проверено на маке Мурада |
+| Create-bot v2: Session Health | 2026-06-20 | pruneAfter 7d, maxEntries 60, daily restart cron |
 | Commercial License | 2026-06-20 | Переход с MIT на proprietary для B2B-продаж |
+| Backup script exit 23 | 2026-06-22 | Race condition sqlite-wal → допустимый код, 2>/dev/null убран |
+| memory_search timeout | 2026-06-23 | QMD embedding provider timeout 15s при загрузке Ollama. BM25 fallback работает. Требует graceful degradation. |
 
 ---
 
@@ -157,7 +171,8 @@
 | v0.3.0 | 2026-06 | Friday-Ops Agent, heartbeat, self-heal |
 | v0.3.1 | 2026-06 | Multi-Client Deployment |
 | v0.4.0 | 2026-06 | Enhanced Mode (cloud models) |
-| **v0.5.0** | **2026-06-20** | **PII Pipeline, Brain Ingest, Memory anonymization, Commercial License** |
+| **v0.5.0** | **2026-06-20** | **PII Pipeline, Brain Ingest v2.1, Memory anonymization, Name Lookup, Deploy scripts, Commercial License** |
+| v0.5.1 | 2026-06-23 | memory_search timeout fix (QMD graceful degradation), Brain notes 1042, backup exit 23 |
 | v0.6.0 | Q3 2026 | Knowledge Mode RAG, Friday-Brain-Personal, прямой чат lookup |
 | v0.7.0 | Q4 2026 | Multi-tenant, team workflows |
 | v1.0.0 | 2027 | Enterprise: SSO, audit log, compliance |

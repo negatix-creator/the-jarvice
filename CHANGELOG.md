@@ -229,3 +229,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Config.yaml generation during setup
 - Interactive Telegram/Exchange/OpenClaw credential setup
 - .zshrc/.bashrc PATH configuration
+
+## [0.5.0] - 2026-06-20
+
+### Added
+- **PII Pipeline**: 7-script anonymization pipeline (Teams/Exchange → GREEN/RED)
+- **Brain Ingest v2.1**: 7-phase validation, 937→1042 atoms, 16 entity types, 12 link types
+- **Commercial License**: MIT → Proprietary (Production/Hosting/Integration/Evaluation)
+- **Create-bot skill v2**: Part 12 — Memory Management & Session Health
+- **Deploy scripts**: macOS + Linux one-command deploy (scripts/deploy-openclaw-macos.sh, scripts/deploy-openclaw-linux.sh)
+- **INFRASTRUCTURE_REGISTRY.md**: Unified registry of all machines, services, credentials
+- **6 agents**: Jarvis, Friday, Edith, HERA, Ultron, Jeeves
+- **27 cron jobs**: summaries, scraping, brain ingest, health checks, backup, security watchdog
+- **CI**: GitHub Actions (macOS + Ubuntu, Python 3.10-3.13)
+
+### Changed
+- Brain Ingest: DeepSeek V4 Pro extract + GLM 5.1 validate + qwen3:14b NER
+- Pipeline: 707s → 198s (−72%)
+- Multi-client deployment: VPS, macOS, Linux — tested in production (mac Мурада, 19.06)
+
+## [0.4.0] - 2026-06-17
+
+### Added
+- **One-command deploy**: macOS + Linux scripts (scp + run = full install)
+- **Setup.sh rewrite**: 13-step full system installer with humor
+- **Cloud-only models**: glm-5.2:cloud primary, glm-5.1:cloud fallback
+- **Ollama SSH key**: cloud auth via ollama.com signin
+
+### Fixed
+- `ollama cloud login` → `ollama signin`
+- `openclaw pair` → `openclaw channels add`
+- `pip install -e` → `pip install .`
+
+## [0.5.1] - 2026-06-23
+
+### Changed
+- **Landing SEO**: Open Graph, Twitter Card, Schema.org, canonical URL, keywords, robots
+- **Landing CTA**: Telegram link updated to @Mit_sell_ai_bot, PII disclaimer added
+- **ROADMAP**: Updated with deploy scripts, create-bot v2 session health, backup fix, memory_search timeout
+
+### Added
+- **robots.txt + sitemap.xml** for landing SEO
+
+### Fixed
+- **Backup script**: exit 23 (sqlite-wal race condition) handled gracefully
+- **memory_search timeout**: QMD embedding provider timeout 15s documented, BM25 fallback works
