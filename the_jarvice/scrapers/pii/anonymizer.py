@@ -554,7 +554,7 @@ class MappingManager:
                         if input_initials == full_initials[:len(input_initials)]:
                             return token
 
-                # Multi-part declined name: "Крыльцову Дмитрию" vs "Крыльцов Дмитрий"
+                # Multi-part declined name: "Testovu Dmitry" vs "Krylov Дмитрий"
                 # Each part matches via root matching
                 if len(name_parts) == len(full_parts) and len(name_parts) >= 2:
                     surname = name_parts[0]
@@ -1002,7 +1002,7 @@ if __name__ == "__main__":
     test_text = """
     Добрый день, Иванов Алексей Петрович!
     Ваш номер телефона: +7 916 123-45-67
-    Email: ivanov@fsk.ru
+    Email: ivanov@example.com
     ИНН: 770708389312
     СНИЛС: 123-456-789 01
     Telegram: @ivanov_vp
@@ -1047,7 +1047,7 @@ if __name__ == "__main__":
     tests = [
         ("Иванов", "Иванова", True),
         ("Петров", "Петровым", True),
-        ("Крыльцов", "Крыльцову", True),
+        ("Krylov", "Krylovу", True),
         ("Иванов", "Петров", False),
         ("Вика", "Вике", True),
         ("Сидоров", "Сидоровна", True),

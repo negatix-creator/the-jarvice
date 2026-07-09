@@ -310,7 +310,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Brain Ingest: DeepSeek V4 Pro extract + GLM 5.1 validate + qwen3:14b NER
 - Pipeline: 707s → 198s (−72%)
-- Multi-client deployment: VPS, macOS, Linux — tested in production (mac Мурада, 19.06)
+- Multi-client deployment: VPS, macOS, Linux — tested in production (mac партнёра, 19.06)
 
 ## [0.4.0] - 2026-06-17
 

@@ -29,13 +29,13 @@ class TestPIIClassifier:
     """Tests for the regex-based PII classifier."""
 
     def test_detect_email(self):
-        text = "Contact ivanov@fsk.ru for details"
+        text = "Contact ivanov@example.com for details"
         entities = PIIClassifier.classify(text)
         assert len(entities) >= 1
         assert any(e[0] == "email" for e in entities)
 
     def test_detect_multiple_emails(self):
-        text = "Write to ivanov@fsk.ru and petrov@company.com"
+        text = "Write to ivanov@example.com and petrov@company.com"
         entities = PIIClassifier.classify(text)
         emails = [e for e in entities if e[0] == "email"]
         assert len(emails) == 2
@@ -151,11 +151,11 @@ class TestAnonymizer:
             mapping = Path(tmpdir) / "mapping.json"
             anon = Anonymizer(red_dir=red, green_dir=green, mapping_path=mapping)
 
-            text = "Напишите на ivanov@fsk.ru"
+            text = "Напишите на ivanov@example.com"
             result, has_pii = anon.anonymize_text(text)
             assert has_pii
             assert "[EMAIL_1]" in result
-            assert "ivanov@fsk.ru" not in result
+            assert "ivanov@example.com" not in result
 
     def test_anonymize_text_phone(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -179,8 +179,8 @@ class TestAnonymizer:
             data = {
                 "subject": "Встреча",
                 "body": "Давайте обсудим",
-                "sender": {"name": "Иванов Алексей", "email": "ivanov@fsk.ru"},
-                "recipients": [{"name": "Петров Сергей", "email": "petrov@fsk.ru"}],
+                "sender": {"name": "Иванов Алексей", "email": "ivanov@example.com"},
+                "recipients": [{"name": "Петров Сергей", "email": "petrov@example.com"}],
                 "date": "2026-05-21T10:00:00",
             }
             result, has_pii = anon.anonymize_dict(data)
@@ -221,7 +221,7 @@ class TestDeanonymizer:
                 "[PERSON_2]": {"full": "Петров Сергей", "variants": []},
             },
             "phones": {"[PHONE_1]": "+7 916 123-45-67"},
-            "emails": {"[EMAIL_1]": "ivanov@fsk.ru"},
+            "emails": {"[EMAIL_1]": "ivanov@example.com"},
             "ids": {},
             "organizations": {},
             "addresses": {},
@@ -376,7 +376,7 @@ class TestScrapeResultIntegration:
                     {
                         "subject": "Встреча с Ивановым",
                         "body": "Позвоните на +7 916 123-45-67",
-                        "sender": {"name": "Иванов Алексей", "email": "ivanov@fsk.ru"},
+                        "sender": {"name": "Иванов Алексей", "email": "ivanov@example.com"},
                         "recipients": [],
                         "date": "2026-05-21T10:00:00",
                         "message_id": "test-123",

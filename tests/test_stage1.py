@@ -37,9 +37,9 @@ _find_name_occurrences = mod._find_name_occurrences
 
 TEST_TEXTS = {
     "russian_email": """
-    Добрый день, Иванов Алексей Петрович!
+    Добрый день, Ivanov Alexey Петрович!
     Ваш номер телефона: +7 916 123-45-67
-    Email: ivanov@fsk.ru
+    Email: ivanov@example.com
     ИНН: 770708389312
     СНИЛС: 123-456-789 01
     Прошу согласовать бюджет с Петровым Сергеем.
@@ -53,11 +53,11 @@ TEST_TEXTS = {
     """,
     "calendar_item": {
         "subject": "Встреча с Ивановым А.П.",
-        "body": "Обсуждение бюджета с Крыльцовым Дмитрием. Телефон: +7 903 222-33-44",
-        "sender": {"name": "Петров Сергей", "email": "petrov@fsk.ru"},
+        "body": "Обсуждение бюджета с Krylovым Дмитрием. Телефон: +7 903 222-33-44",
+        "sender": {"name": "Petrov Sergey", "email": "petrov@example.com"},
         "recipients": [
-            {"name": "Иванов А.П.", "email": "ivanov@fsk.ru"},
-            {"name": "Крыльцов Дмитрий", "email": "kryltsov@fsk.ru"},
+            {"name": "Ivanov A.P.", "email": "ivanov@example.com"},
+            {"name": "Testov Dmitry", "email": "testov@example.com"},
         ],
     },
 }
@@ -72,12 +72,12 @@ def test_roots_match():
         ("Иванов", "Ивановым", True),
         ("Иванов", "Иванову", True),
         ("Петров", "Петровым", True),
-        ("Крыльцов", "Крыльцову", True),
+        ("Krylov", "Krylovу", True),
         ("Иванов", "Петров", False),
         ("Вика", "Вике", True),
         ("Сидоров", "Сидоровна", True),
         ("Сергей", "Сергеем", True),
-        ("Дмитрий", "Дмитрию", True),
+        ("Dmitry", "Dmitry", True),
         ("Алексей", "Алексеем", True),
         ("Сергей", "Сергеевич", True),
         ("Москва", "Москве", True),
@@ -108,24 +108,24 @@ def test_variant_matching():
     mgr = MappingManager(mapping_path=mapping_path)
 
     # Create full name first
-    p1 = mgr.get_or_create_token("person", "Иванов Алексей Петрович")
+    p1 = mgr.get_or_create_token("person", "Ivanov Alexey Петрович")
     cases = [
-        ("Иванов А.П.", p1, "Initials match"),
+        ("Ivanov A.P.", p1, "Initials match"),
         ("Иванов", p1, "Surname match"),
         ("Иванову А.П.", p1, "Declined initials"),
     ]
 
     # Create another person
-    p2 = mgr.get_or_create_token("person", "Крыльцов Дмитрий")
+    p2 = mgr.get_or_create_token("person", "Testov Dmitry")
     cases.extend([
-        ("Крыльцову Дмитрию", p2, "Declined full name"),
-        ("Крыльцов", p2, "Surname only"),
+        ("Testovu Dmitry", p2, "Declined full name"),
+        ("Krylov", p2, "Surname only"),
     ])
 
     # Declined first, then nominative
     p3 = mgr.get_or_create_token("person", "Петровым Сергеем")
     cases.extend([
-        ("Петров Сергей", p3, "Nominative after declined"),
+        ("Petrov Sergey", p3, "Nominative after declined"),
     ])
 
     passed = 0
@@ -250,7 +250,7 @@ def test_anonymization_roundtrip():
         failed += 1
         print(f"  ✗ Phone NOT masked")
 
-    if "ivanov@fsk.ru" not in anon_text:
+    if "ivanov@example.com" not in anon_text:
         passed += 1
         print(f"  ✓ Email masked")
     else:
@@ -277,7 +277,7 @@ def test_anonymization_roundtrip():
         failed += 1
         print(f"  ✗ Phone NOT restored")
 
-    if "ivanov@fsk.ru" in restored:
+    if "ivanov@example.com" in restored:
         passed += 1
         print(f"  ✓ Email restored")
     else:

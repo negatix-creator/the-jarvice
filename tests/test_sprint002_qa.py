@@ -63,7 +63,7 @@ class TestExchangeScraperEdgeCases:
         """test_connection should fail gracefully without password."""
         from the_jarvice.scrapers.exchange.scraper import ExchangeScraper
 
-        config = {"server": "mail.fsk.ru", "email": "test@fsk.ru"}
+        config = {"server": "mail.example.com", "email": "test@example.com"}
         scraper = ExchangeScraper(config)
         with patch("the_jarvice.scrapers.exchange.scraper.HAS_EXCHANGELIB", True):
             ok, msg = scraper.test_connection()
@@ -94,11 +94,11 @@ class TestExchangeScraperEdgeCases:
         """get_status should return useful status dict."""
         from the_jarvice.scrapers.exchange.scraper import ExchangeScraper
 
-        config = {"server": "mail.fsk.ru", "email": "user@fsk.ru", "auth_mode": "basic"}
+        config = {"server": "mail.example.com", "email": "user@example.com", "auth_mode": "basic"}
         scraper = ExchangeScraper(config)
         status = scraper.get_status()
         assert status["name"] == "exchange"
-        assert status["server"] == "mail.fsk.ru"
+        assert status["server"] == "mail.example.com"
         assert "has_exchangelib" in status
 
 

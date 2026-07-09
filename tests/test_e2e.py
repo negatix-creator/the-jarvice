@@ -33,7 +33,7 @@ class TestE2EConfigRoundtrip:
 
             original = JarviceConfig(
                 exchange=ExchangeConfig(
-                    enabled=True, server="mail.fsk.ru", email="user@fsk.ru",
+                    enabled=True, server="mail.example.com", email="user@example.com",
                     auth_mode="basic", scrape_interval_hours=4,
                 ),
                 teams=TeamsConfig(enabled=True, auth_mode="ic3_token"),
@@ -50,8 +50,8 @@ class TestE2EConfigRoundtrip:
             save_config(original, config_path)
             loaded = load_config(config_path)
 
-            assert loaded.exchange.server == "mail.fsk.ru"
-            assert loaded.exchange.email == "user@fsk.ru"
+            assert loaded.exchange.server == "mail.example.com"
+            assert loaded.exchange.email == "user@example.com"
             assert loaded.telegram.chat_id == "123456"
             assert loaded.models.primary == "qwen3:14b"
             assert loaded.schedule.timezone == "Europe/Moscow"
@@ -135,13 +135,13 @@ class TestE2EPIIRoundtrip:
 
             # Step 1: Create realistic email data with PII
             original_data = {
-                "message_id": "<msg123@mail.fsk.ru>",
+                "message_id": "<msg123@mail.example.com>",
                 "subject": "Встреча с Ивановым по бюджету",
                 "body": "Алексей, позвоните мне на +7 916 123-45-67 и напишите на иванов@фск.рф",
-                "sender": {"name": "Иванов Алексей Петрович", "email": "ivanov@fsk.ru"},
+                "sender": {"name": "Ivanov Alexey Petrovich", "email": "ivanov@example.com"},
                 "recipients": [
-                    {"name": "Петров Сергей", "email": "petrov@fsk.ru"},
-                    {"name": "Сидорова Анна", "email": "sidorova@fsk.ru"},
+                    {"name": "Petrov Sergey", "email": "petrov@example.com"},
+                    {"name": "Sidorova Anna", "email": "sidorova@example.com"},
                 ],
                 "date": "2026-05-21T10:30:00+03:00",
                 "is_read": False,
@@ -169,21 +169,21 @@ class TestE2EPIIRoundtrip:
             anon_item = anon_result.items[0]
             assert "[PERSON_" in anon_item["sender"]["name"]
             assert "[EMAIL_" in anon_item["sender"]["email"]
-            assert "ivanov@fsk.ru" not in anon_item["subject"]
-            assert "ivanov@fsk.ru" not in anon_item["body"]
+            assert "ivanov@example.com" not in anon_item["subject"]
+            assert "ivanov@example.com" not in anon_item["body"]
             assert "+7 916 123-45-67" not in anon_item["body"]
 
             # Verify RED has originals
             red_files = list(red.glob("*.json"))
             assert len(red_files) == 1
             red_data = json.loads(red_files[0].read_text(encoding="utf-8"))
-            assert "ivanov@fsk.ru" in json.dumps(red_data)
+            assert "ivanov@example.com" in json.dumps(red_data)
 
             # Step 4: Deanonymize (GREEN → real values for delivery)
             deanon = Deanonymizer(mapping_path=mapping_path)
             summary = f"Встреча с {anon_item['sender']['name']} по бюджету"
             real_summary = deanon.deanonymize(summary)
-            assert "Иванов Алексей Петрович" in real_summary
+            assert "Ivanov Alexey Petrovich" in real_summary
 
     def test_pii_multiple_emails_roundtrip(self):
         """Test roundtrip with multiple emails containing same PII."""
@@ -202,7 +202,7 @@ class TestE2EPIIRoundtrip:
                 {
                     "subject": "Вопрос от Иванова",
                     "body": "Иванов просит подтвердить",
-                    "sender": {"name": "Иванов Алексей", "email": "ivanov@fsk.ru"},
+                    "sender": {"name": "Ivanov Alexey", "email": "ivanov@example.com"},
                     "recipients": [],
                     "message_id": "msg-1",
                     "date": "2026-05-21",
@@ -210,8 +210,8 @@ class TestE2EPIIRoundtrip:
                 {
                     "subject": "Ответ Иванову",
                     "body": "Отправлено Иванову для проверки",
-                    "sender": {"name": "Петров Сергей", "email": "petrov@fsk.ru"},
-                    "recipients": [{"name": "Иванов Алексей", "email": "ivanov@fsk.ru"}],
+                    "sender": {"name": "Petrov Sergey", "email": "petrov@example.com"},
+                    "recipients": [{"name": "Ivanov Alexey", "email": "ivanov@example.com"}],
                     "message_id": "msg-2",
                     "date": "2026-05-21",
                 },
@@ -237,8 +237,8 @@ class TestE2EPIIRoundtrip:
             # Deanonymize should restore consistently
             deanon = Deanonymizer(mapping_path=mapping_path)
             restored = deanon.deanonymize(all_text)
-            assert "Иванов Алексей" in restored
-            assert "Петров Сергей" in restored
+            assert "Ivanov Alexey" in restored
+            assert "Petrov Sergey" in restored
 
 
 # ── E2E: ScrapeResult Export ──────────────────────────────────────────────────
@@ -376,7 +376,7 @@ class TestE2EOpenClawConfig:
             template_path.write_text(template, encoding="utf-8")
 
             config = JarviceConfig(
-                exchange={"server": "mail.fsk.ru", "email": "user@fsk.ru"},
+                exchange={"server": "mail.example.com", "email": "user@example.com"},
                 models={"primary": "qwen3:14b"},
             )
 
@@ -386,7 +386,7 @@ class TestE2EOpenClawConfig:
             # Verify it's valid JSON
             generated = json.loads(output.read_text(encoding="utf-8"))
             assert generated["version"] == 1
-            assert generated["exchange"]["server"] == "mail.fsk.ru"
+            assert generated["exchange"]["server"] == "mail.example.com"
             assert generated["models"]["primary"] == "qwen3:14b"
 
 

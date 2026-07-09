@@ -184,7 +184,7 @@ workspace-jarvis/
 - `anonymize_memory.py` — маскирует ПДн в memory-файлах
 - Использует mapping.json (3107 записей на момент анонимизации)
 - Заменяет: полные ФИО (2+ слов), фамилии, email, телефоны
-- НЕ заменяет: одиночные имена (Александр, Дмитрий) — чтобы избежать ложных срабатываний
+- НЕ заменяет: одиночные имена (Alexander, Dmitry) — чтобы избежать ложных срабатываний
 - Backup: `memory/.pre-anonymize-backup/`
 
 ### 5.3. Embeddings
@@ -225,13 +225,13 @@ Deanonymizer (локально):
 **Для прямого чата (AGENTS.md правило):**
 ```bash
 echo 'Текст с [PERSON_653]' | python3 \
-  /Users/mizhenskii/.openclaw/workspace-jarvis/scripts/pii_pipeline/deanonymize_response.py
+  ~/.local/bin/deanonymize_response.py
 ```
 
 **Для кронов (сводки):**
 ```bash
-python3 /Users/mizhenskii/.openclaw/workspace/scripts/pii_pipeline/deanonymize.py \
-  --file /Users/mizhenskii/.openclaw/workspace-jarvis/spike/evening-final.md
+python3 ~/.local/bin/deanonymize.py \
+  --file /tmp/evening-summary.md
 ```
 
 **PII Daemon (backup, не активен):**

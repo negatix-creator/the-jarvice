@@ -96,13 +96,13 @@
 | 1 | **Teams transcripts зависают** — Playwright headless=True timeout | Нет новых транскрипций с 04.07 | 🔴 Блокер | headless=False или увеличить таймауты |
 | 2 | **Teams sync scraper FAILED** — token refresh timeout/SIGKILL | Потеря данных чатов | 🔴 Блокер | Fix teams_login.py — обработка «остаться в системе?» |
 | 3 | **Telegram delivery баг** — сообщения пропадают/перезаписываются | Часть сводок не доходит | 🟡 Деградация | Не рестартить gateway при работе агентов; ждёт фикса OpenClaw |
-| 4 | **Memory Search (QMD)** — vector unknown, embedModel NOT SET | Поиск не работает | 🟡 Заморожено | Решение Вадима: НЕ чинить, переход на Brain v3.1 |
+| 4 | **Memory Search (QMD)** — vector unknown, embedModel NOT SET | Поиск не работает | 🟡 Заморожено | Решение owner: НЕ чинить, переход на Brain v3.1 |
 | 5 | **ArGO кроны error** — 4/5 джобов error 6 дней | Напоминания о добавках не работают | 🟡 Деградация | Требует investigation |
 | 6 | **Ultron Brain Stats error** — 9 consecutive | Нет статистики Brain | 🟡 Деградация | Brain v3.0 заморожен, скорее всего несовместимость |
 | 7 | **Weekly Docs Update error** — 5 consecutive | Документация не обновляется автоматически | 🟡 Деградация | Требует investigation |
 | 8 | **dev-ssh-key** — НЕ найден в Keychain | Dev-агент может не иметь доступа к репо | 🟡 Риск | Проверить и добавить в Keychain |
 | 9 | **Brain Ingest nightly error** — 9 consecutive (v3.0 заморожен) | Ночной прогон не работает | 🟡 Ожидается | Заменён на Brain v3.1 pipeline |
-| 10 | **Exchange скрейпинг** — mail.fsk.ru TLS timeout, O365 mailbox not exist | Почта не синхронизируется | 🟡 Заморожено | Ждёт новых кредов от Вадима |
+| 10 | **Exchange скрейпинг** — mail.example.com TLS timeout, O365 mailbox not exist | Почта не синхронизируется | 🟡 Заморожено | Ждёт новых кредов |
 
 ---
 
@@ -185,7 +185,7 @@
 | GLM 5.1 для validation | 2026-06-20 | Cross-model diversity — разная архитектура от extraction |
 | qwen3:14b для NER | 2026-06-20 | Локальная модель, не передаёт ПДн наружу, достаточное качество распознавания |
 | Memory PII-очистка | 2026-06-20 | 102 файла memory/*.md обезличены, консистентные токены с GREEN/ |
-| Deploy scripts (macOS/Linux) | 2026-06-20 | Полный деплой одним скриптом, проверено на маке Мурада |
+| Deploy scripts (macOS/Linux) | 2026-06-20 | Полный деплой одним скриптом, проверено на маке партнёра |
 | Create-bot v2: Session Health | 2026-06-20 | pruneAfter 7d, maxEntries 60, daily restart cron |
 | Commercial License | 2026-06-20 | Переход с MIT на proprietary для B2B-продаж |
 | Backup script exit 23 | 2026-06-22 | Race condition sqlite-wal → допустимый код, 2>/dev/null убран |
