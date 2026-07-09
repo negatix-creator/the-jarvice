@@ -5,6 +5,70 @@ All notable changes to The Jarvice will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-07-09
+
+### Added
+- **Brain v3.1 Knowledge Graph Engine** — separate release ([brain-3.1](https://github.com/negatix-creator/brain-3.1))
+- **PII Pipeline v2.1** — full anonymization: Natasha NER + regex + Yargy + verify-LLM
+- **Re-identification Risk Gate** — 6-step check before data enters GREEN zone
+- **Identity Store** — SQLite-based with encrypted values, OS Keychain key, alias history
+- **Cloud Consolidator** — GLM-5.2 / DeepSeek V4 Pro on masked (GREEN) data only
+- **GREEN Projector** — canon → green.sqlite with FTS5 + sqlite-vec + capsules + MOC
+- **Policy Engine** — realm × sensitivity × principal access control
+- **Cloud Egress Layer** — context minimization + session-scoped aliasing
+- **Deletion Saga** — crypto-shredding + cascade deletion from all stores
+- **OS Isolation** — RED/GREEN zones separated by OS users and file permissions
+- **Full architecture specification** — see `docs/ARCHITECTURE-FULL.md` and `docs/pii-pipeline-architecture.md`
+- **8 agents ecosystem** — Friday (orchestrator), Jarvis (strategic copilot), Ultron (DevOps), Dev (code), Sophie (product), ArGO (health), Edith (finance), Hera (strategy)
+- **23 active cron jobs** — summaries, scraping, brain ingest, health checks, backup
+
+### Changed
+- **Brain v3.0 → v3.1** — consolidator moved from RED (local) to GREEN (cloud): cloud models never see PII
+- **NER Worker** — now a separate local-only component (extracts entities + builds identity_map)
+- **mapping.json → identity_map.sqlite** — transactional, encrypted, with alias history
+- **Jarvice Sell Bot** — fixed SyntaxError in survey handler
+
+### Fixed
+- **Ultron cron jobs** — delivery now routes through Ultron's bot (was sending through Friday's bot)
+- **Brain Stats cron** — fixed model path `ollama/kimi-k2.6:cloud` → `ollama-cloud/kimi-k2.6`
+- **Ultron Daily Digest** — fixed delivery accountId to route correctly
+
+## [0.5.4] - 2026-07-03
+
+### Changed
+- Updated ROADMAP with Brain v3.1 pipeline progress
+
+## [0.5.1] - 2026-06-26
+
+### Changed
+- SEO landing page improvements
+- ROADMAP update
+- CHANGELOG fix
+
+## [0.5.0] - 2026-06-20
+
+### Added
+- PII Pipeline — full anonymization with RED/GREEN zones
+- Brain Ingest v2.1 — knowledge graph from agent memories
+- Commercial License
+
+## [0.4.0] - 2026-06-10
+
+### Added
+- One-command deploy scripts (macOS + Linux)
+
+## [0.3.1] - 2026-06-05
+
+### Changed
+- Version bump
+
+## [0.3.0] - 2026-06-05
+
+### Added
+- Setup.sh — fully in Russian
+- Humor improvements
+- Critical bug fixes
+
 ## [0.2.0] - 2026-05-21
 
 ### Added
